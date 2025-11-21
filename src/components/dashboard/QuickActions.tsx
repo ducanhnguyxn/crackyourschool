@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { FileText, Brain, BookOpen, Sparkles, Lightbulb, Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const QuickActions = () => {
   const actions = [
@@ -51,20 +52,41 @@ export const QuickActions = () => {
     <Card className="p-6">
       <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {actions.map((action) => (
-          <button
-            key={action.label}
-            className="flex flex-col items-center gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-all hover:scale-105 hover:shadow-md group"
-          >
-            <div className={`p-3 rounded-full ${action.bgColor} group-hover:scale-110 transition-transform`}>
-              <action.icon className={`w-6 h-6 ${action.color}`} />
-            </div>
-            <div className="text-center">
-              <p className="font-semibold text-sm">{action.label}</p>
-              <p className="text-xs text-muted-foreground">{action.description}</p>
-            </div>
-          </button>
-        ))}
+        {actions.map((action) => {
+          const isAITutor = action.label === "AI Tutor";
+          const buttonContent = (
+            <>
+              <div className={`p-3 rounded-full ${action.bgColor} group-hover:scale-110 transition-transform`}>
+                <action.icon className={`w-6 h-6 ${action.color}`} />
+              </div>
+              <div className="text-center">
+                <p className="font-semibold text-sm">{action.label}</p>
+                <p className="text-xs text-muted-foreground">{action.description}</p>
+              </div>
+            </>
+          );
+
+          if (isAITutor) {
+            return (
+              <Link
+                key={action.label}
+                to="/ai-tutor"
+                className="flex flex-col items-center gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-all hover:scale-105 hover:shadow-md group"
+              >
+                {buttonContent}
+              </Link>
+            );
+          }
+
+          return (
+            <button
+              key={action.label}
+              className="flex flex-col items-center gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-all hover:scale-105 hover:shadow-md group"
+            >
+              {buttonContent}
+            </button>
+          );
+        })}
       </div>
     </Card>
   );
