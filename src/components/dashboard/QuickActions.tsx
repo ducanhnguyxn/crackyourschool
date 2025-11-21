@@ -53,7 +53,9 @@ export const QuickActions = () => {
       <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {actions.map((action) => {
-          const isAITutor = action.label === "AI Tutor";
+          const isLinked = action.label === "AI Tutor" || action.label === "Mind Map";
+          const linkPath = action.label === "AI Tutor" ? "/ai-tutor" : "/mind-map";
+          
           const buttonContent = (
             <>
               <div className={`p-3 rounded-full ${action.bgColor} group-hover:scale-110 transition-transform`}>
@@ -66,11 +68,11 @@ export const QuickActions = () => {
             </>
           );
 
-          if (isAITutor) {
+          if (isLinked) {
             return (
               <Link
                 key={action.label}
-                to="/ai-tutor"
+                to={linkPath}
                 className="flex flex-col items-center gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-all hover:scale-105 hover:shadow-md group"
               >
                 {buttonContent}
