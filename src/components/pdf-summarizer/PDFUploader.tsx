@@ -12,7 +12,8 @@ export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
   const extractTextAndImagesFromPDF = async (file: File): Promise<{ text: string; images: string[] }> => {
     try {
       const pdfjsLib = await import('pdfjs-dist');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+      const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs?url');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
       
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
