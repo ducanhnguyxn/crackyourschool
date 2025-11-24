@@ -210,23 +210,24 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
 
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="p-4 border-b border-border">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
+      <div className="p-3 border-b border-border">
+        <h2 className="text-base font-semibold flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-primary" />
           AI Assistant
         </h2>
       </div>
 
       {messages.length === 0 && (
-        <div className="flex-1 flex flex-col items-center justify-center p-6">
-          <MessageSquare className="w-16 h-16 text-muted-foreground mb-4" />
-          <h3 className="text-xl font-semibold mb-2">Ready to help!</h3>
-          <p className="text-muted-foreground text-center mb-6">
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          <MessageSquare className="w-12 h-12 text-muted-foreground mb-3" />
+          <h3 className="text-lg font-semibold mb-2">Ready to help!</h3>
+          <p className="text-sm text-muted-foreground text-center mb-4">
             Choose an action below or ask me anything about your PDF
           </p>
           <div className="grid grid-cols-2 gap-2 w-full max-w-md">
             <Button
               variant="outline"
+              size="sm"
               onClick={() => handleActionClick({ label: "Summarize", prompt: "Please summarize this PDF" })}
               disabled={isLoading}
             >
@@ -235,6 +236,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
             </Button>
             <Button
               variant="outline"
+              size="sm"
               onClick={() => handleActionClick({ label: "Ask a Question", prompt: "I have a question about this PDF" })}
               disabled={isLoading}
             >
@@ -245,6 +247,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
               <Button
                 key={idx}
                 variant="outline"
+                size="sm"
                 onClick={() => handleActionClick(action)}
                 disabled={isLoading}
               >
@@ -264,7 +267,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="p-4 border-t border-border">
+          <div className="p-3 border-t border-border">
             <div className="flex gap-2 mb-2 flex-wrap">
               {actionButtons.slice(0, 4).map((action, idx) => (
                 <Button
@@ -284,10 +287,10 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about the PDF..."
-                className="min-h-[60px]"
+                className="min-h-[50px] max-h-[100px] resize-none"
                 disabled={isLoading}
               />
-              <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
+              <Button onClick={handleSend} disabled={isLoading || !input.trim()} size="icon">
                 <Send className="w-4 h-4" />
               </Button>
             </div>
