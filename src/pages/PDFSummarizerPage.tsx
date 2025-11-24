@@ -35,11 +35,11 @@ const PDFSummarizerPage = () => {
             <PDFUploader onFileUpload={handleFileUpload} />
           </div>
         ) : (
-          <div className="h-full grid grid-cols-2 divide-x divide-border">
-            <div className="overflow-hidden">
+          <div className="h-full flex">
+            <div className="w-2/5 min-w-[400px] max-w-[600px] border-r-2 border-border overflow-hidden bg-muted/20">
               <PDFViewer file={pdfFile} />
             </div>
-            <div className="overflow-hidden">
+            <div className="flex-1 overflow-hidden bg-background">
               <AIChatPanel pdfContent={pdfText} pdfImages={pdfImages} />
             </div>
           </div>
