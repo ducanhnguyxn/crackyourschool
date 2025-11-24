@@ -12,8 +12,8 @@ export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
   const extractTextAndImagesFromPDF = async (file: File): Promise<{ text: string; images: string[] }> => {
     try {
       const pdfjsLib = await import('pdfjs-dist');
-      const pdfjsWorker = await import('pdfjs-dist/build/pdf.worker.mjs?url');
-      pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+      // Use same worker as PDFViewer
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
       
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
