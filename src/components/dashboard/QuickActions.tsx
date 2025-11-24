@@ -13,8 +13,8 @@ export const QuickActions = () => {
     },
     {
       icon: FileText,
-      label: "Upload PDF",
-      description: "Study from your documents",
+      label: "PDF Summarizer",
+      description: "Analyze your documents",
       color: "text-primary",
       bgColor: "bg-primary/10",
     },
@@ -53,8 +53,8 @@ export const QuickActions = () => {
       <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {actions.map((action) => {
-          const isLinked = action.label === "AI Tutor" || action.label === "Mind Map";
-          const linkPath = action.label === "AI Tutor" ? "/ai-tutor" : "/mind-map";
+          const isLinked = action.label === "AI Tutor" || action.label === "Mind Map" || action.label === "PDF Summarizer";
+          const linkPath = action.label === "AI Tutor" ? "/ai-tutor" : action.label === "Mind Map" ? "/mind-map" : "/pdf-summarizer";
           
           const buttonContent = (
             <>
