@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 interface PDFUploaderProps {
-  onFileUpload: (file: File, text: string) => void;
+  onFileUpload: (file: File, text: string, images: string[]) => void;
 }
 
 export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
   const { toast } = useToast();
 
-  const extractTextFromPDF = async (file: File): Promise<string> => {
+  const extractTextAndImagesFromPDF = async (file: File): Promise<{ text: string; images: string[] }> => {
     try {
       const pdfjsLib = await import('pdfjs-dist');
       pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -18,16 +18,37 @@ export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       
       let fullText = '';
-      for (let i = 1; i <= pdf.numPages; i++) {
+      const images: string[] = [];
+      
+      for (let i = 1; i <= Math.min(pdf.numPages, 10); i++) {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
         const pageText = textContent.items.map((item: any) => item.str).join(' ');
         fullText += pageText + '\n';
+        
+        // Extract page as image
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        
+        if (context) {
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          
+          await page.render({
+            canvasContext: context,
+            viewport: viewport,
+            canvas: canvas,
+          }).promise;
+          
+          const imageData = canvas.toDataURL('image/jpeg', 0.8);
+          images.push(imageData);
+        }
       }
       
-      return fullText;
+      return { text: fullText, images };
     } catch (error) {
-      console.error('Error extracting PDF text:', error);
+      console.error('Error extracting PDF content:', error);
       throw error;
     }
   };
@@ -46,11 +67,11 @@ export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
     }
 
     try {
-      const text = await extractTextFromPDF(file);
-      onFileUpload(file, text);
+      const { text, images } = await extractTextAndImagesFromPDF(file);
+      onFileUpload(file, text, images);
       toast({
         title: "PDF uploaded successfully",
-        description: "You can now chat with your document",
+        description: "You can now chat with your document (including images)",
       });
     } catch (error) {
       toast({
