@@ -1,7 +1,1 @@
-project_id = "rwolmkdjjihepolwarnd"
-
-[functions.ai-tutor]
-verify_jwt = false
-
-[functions.pdf-chat]
-verify_jwt = false
+project_id = "ejakrzhkyfzxeuqcyxrp"
