@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
-// Configure the worker
-const workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+// Configure the worker dynamically
+if (typeof window !== 'undefined' && 'Worker' in window) {
+  import('pdfjs-dist/build/pdf.worker.mjs?url').then((pdfjsWorker) => {
+    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
+  });
+}
 
 interface PDFViewerProps {
   file: File;
