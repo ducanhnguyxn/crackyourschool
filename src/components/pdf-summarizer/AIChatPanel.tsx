@@ -17,9 +17,10 @@ interface ActionButton {
 
 interface AIChatPanelProps {
   pdfContent: string;
+  pdfImages: string[];
 }
 
-export const AIChatPanel = ({ pdfContent }: AIChatPanelProps) => {
+export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -54,6 +55,7 @@ export const AIChatPanel = ({ pdfContent }: AIChatPanelProps) => {
           body: JSON.stringify({
             messages: [{ role: "user", content: "Analyze and suggest actions" }],
             pdfContent,
+            pdfImages,
             action: "suggest_actions",
           }),
         }
@@ -111,6 +113,7 @@ export const AIChatPanel = ({ pdfContent }: AIChatPanelProps) => {
           body: JSON.stringify({
             messages: userMessages,
             pdfContent,
+            pdfImages,
             action,
           }),
         }

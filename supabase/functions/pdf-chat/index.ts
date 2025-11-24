@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, pdfContent, action } = await req.json();
+    const { messages, pdfContent, pdfImages, action } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -21,14 +21,32 @@ serve(async (req) => {
 
     let systemPrompt = `You are an AI assistant helping users understand and analyze PDF documents. `;
     
+    const contentMessages: any[] = [];
+    
     if (pdfContent) {
-      systemPrompt += `Here is the PDF content:\n\n${pdfContent.substring(0, 15000)}\n\nUse this context to answer questions accurately.`;
+      systemPrompt += `Here is the extracted text from the PDF:\n\n${pdfContent.substring(0, 10000)}\n\n`;
+    }
+    
+    if (pdfImages && pdfImages.length > 0) {
+      systemPrompt += `I have also provided images of the PDF pages for visual context. Please analyze both the text and images to provide comprehensive answers.\n\n`;
+      
+      // Add images to the first user message
+      contentMessages.push({
+        role: 'user',
+        content: [
+          { type: 'text', text: 'Here are the PDF page images for context:' },
+          ...pdfImages.slice(0, 5).map((img: string) => ({
+            type: 'image_url',
+            image_url: { url: img }
+          }))
+        ]
+      });
     }
 
     if (action === 'summarize') {
-      systemPrompt += `\n\nProvide a comprehensive summary of the PDF document, highlighting key points, main themes, and important details.`;
+      systemPrompt += `\n\nProvide a comprehensive summary of the PDF document, highlighting key points, main themes, and important details. Consider both text and visual elements.`;
     } else if (action === 'suggest_actions') {
-      systemPrompt += `\n\nAnalyze this PDF and suggest 4-6 useful action buttons the user might want (e.g., "Extract Dates", "Find Definitions", "List Key Topics", "Identify Main Arguments", "Extract Statistics"). Return ONLY a JSON array of action objects with "label" and "prompt" fields, nothing else.`;
+      systemPrompt += `\n\nAnalyze this PDF (including any images) and suggest 4-6 useful action buttons the user might want (e.g., "Extract Dates", "Find Definitions", "List Key Topics", "Identify Main Arguments", "Extract Statistics", "Describe Images"). Return ONLY a JSON array of action objects with "label" and "prompt" fields, nothing else.`;
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -41,6 +59,7 @@ serve(async (req) => {
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
+          ...contentMessages,
           ...messages
         ],
         stream: true,

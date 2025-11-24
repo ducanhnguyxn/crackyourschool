@@ -9,10 +9,12 @@ import { AIChatPanel } from "@/components/pdf-summarizer/AIChatPanel";
 const PDFSummarizerPage = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfText, setPdfText] = useState<string>("");
+  const [pdfImages, setPdfImages] = useState<string[]>([]);
 
-  const handleFileUpload = (file: File, text: string) => {
+  const handleFileUpload = (file: File, text: string, images: string[]) => {
     setPdfFile(file);
     setPdfText(text);
+    setPdfImages(images);
   };
 
   return (
@@ -38,7 +40,7 @@ const PDFSummarizerPage = () => {
               <PDFViewer file={pdfFile} />
             </div>
             <div className="overflow-hidden">
-              <AIChatPanel pdfContent={pdfText} />
+              <AIChatPanel pdfContent={pdfText} pdfImages={pdfImages} />
             </div>
           </div>
         )}
