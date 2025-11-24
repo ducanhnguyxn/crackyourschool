@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
-// Configure the worker dynamically
-if (typeof window !== 'undefined' && 'Worker' in window) {
-  import('pdfjs-dist/build/pdf.worker.mjs?url').then((pdfjsWorker) => {
-    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker.default;
-  });
-}
+// Use CDN for worker as a reliable fallback
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface PDFViewerProps {
   file: File;
