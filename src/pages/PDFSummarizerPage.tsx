@@ -18,8 +18,8 @@ const PDFSummarizerPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="border-b border-border p-4 flex items-center gap-4">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <header className="flex-shrink-0 border-b border-border p-4 flex items-center gap-4">
         <Link to="/dashboard">
           <Button variant="ghost" size="sm">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -29,17 +29,20 @@ const PDFSummarizerPage = () => {
         <h1 className="text-2xl font-bold">PDF Summarizer</h1>
       </header>
 
-      <main className="flex-1 overflow-hidden flex flex-col">
+      <main className="flex-1 min-h-0">
         {!pdfFile ? (
           <div className="h-full p-8">
             <PDFUploader onFileUpload={handleFileUpload} />
           </div>
         ) : (
-          <div className="flex-1 flex gap-0 overflow-hidden">
-            <div className="w-2/5 min-w-[400px] max-w-[600px] flex flex-col border-r border-border bg-muted/20 shadow-sm overflow-y-auto">
+          <div className="h-full flex">
+            {/* LEFT PANEL - PDF Viewer with independent scroll */}
+            <div className="w-2/5 min-w-[400px] max-w-[600px] border-r border-border bg-muted/20 overflow-y-auto">
               <PDFViewer file={pdfFile} />
             </div>
-            <div className="flex-1 flex flex-col bg-background overflow-hidden">
+            
+            {/* RIGHT PANEL - AI Chat with independent scroll */}
+            <div className="flex-1 min-w-0">
               <AIChatPanel pdfContent={pdfText} pdfImages={pdfImages} />
             </div>
           </div>
