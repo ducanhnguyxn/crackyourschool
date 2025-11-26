@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Sparkles, MessageSquare } from "lucide-react";
+import { Send, Sparkles, MessageSquare, FileText, HelpCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatMessage } from "@/components/ai-tutor/ChatMessage";
@@ -209,8 +209,8 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      <div className="p-3 border-b border-border">
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0 p-3 border-b border-border bg-background/50">
         <h2 className="text-base font-semibold flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
           AI Assistant
@@ -218,7 +218,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
       </div>
 
       {messages.length === 0 && (
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
+        <div className="flex-1 flex flex-col items-center justify-center p-4 overflow-y-auto">
           <MessageSquare className="w-12 h-12 text-muted-foreground mb-3" />
           <h3 className="text-lg font-semibold mb-2">Ready to help!</h3>
           <p className="text-sm text-muted-foreground text-center mb-4">
@@ -231,7 +231,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
               onClick={() => handleActionClick({ label: "Summarize", prompt: "Please summarize this PDF" })}
               disabled={isLoading}
             >
-              <Sparkles className="w-4 h-4 mr-2" />
+              <FileText className="w-4 h-4 mr-2" />
               Summarize
             </Button>
             <Button
@@ -240,7 +240,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
               onClick={() => handleActionClick({ label: "Ask a Question", prompt: "I have a question about this PDF" })}
               disabled={isLoading}
             >
-              <MessageSquare className="w-4 h-4 mr-2" />
+              <HelpCircle className="w-4 h-4 mr-2" />
               Ask Question
             </Button>
             {actionButtons.map((action, idx) => (
@@ -260,19 +260,24 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
 
       {messages.length > 0 && (
         <>
-          <div className="flex-1 overflow-y-auto">
-            {messages.map((message, index) => (
-              <ChatMessage key={index} role={message.role} content={message.content} />
+          <div className="flex-1 overflow-y-auto p-4">
+            {messages.map((message, idx) => (
+              <ChatMessage key={idx} role={message.role} content={message.content} />
             ))}
+            {isLoading && (
+              <div className="flex justify-start mb-4">
+                <Loader2 className="w-5 h-5 animate-spin text-primary" />
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="p-3 border-t border-border">
+          <div className="flex-shrink-0 p-3 border-t border-border bg-background/50">
             <div className="flex gap-2 mb-2 flex-wrap">
               {actionButtons.slice(0, 4).map((action, idx) => (
                 <Button
                   key={idx}
-                  variant="secondary"
+                  variant="outline"
                   size="sm"
                   onClick={() => handleActionClick(action)}
                   disabled={isLoading}
