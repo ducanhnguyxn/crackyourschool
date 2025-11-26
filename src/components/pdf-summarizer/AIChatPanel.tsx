@@ -194,7 +194,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-background">
+    <div className="h-full flex flex-col bg-background overflow-x-hidden">
       <div className="flex-shrink-0 p-4 border-b border-border">
         <h2 className="text-lg font-semibold flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" />
@@ -202,9 +202,9 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
         </h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="flex justify-center p-4">
-          <div className="w-full max-w-[600px] space-y-4">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+        <div className="flex justify-center p-4 w-full">
+          <div className="w-full max-w-[600px] space-y-4 min-w-0">
             {isGeneratingSummary ? (
               <Card className="bg-muted/30">
                 <CardContent className="p-6 flex items-center justify-center">
@@ -213,15 +213,19 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
                 </CardContent>
               </Card>
             ) : summary ? (
-              <Card className="bg-primary/5 border-primary/20">
+              <Card className="bg-primary/5 border-primary/20 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-primary" />
                     Summary
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed break-words overflow-wrap-anywhere">
+                <CardContent className="overflow-hidden">
+                  <div className="text-sm text-foreground leading-relaxed" style={{ 
+                    whiteSpace: 'pre-wrap', 
+                    wordBreak: 'break-word', 
+                    overflowWrap: 'break-word' 
+                  }}>
                     {summary}
                   </div>
                 </CardContent>
@@ -229,7 +233,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
             ) : null}
 
             {suggestedQuestions.length > 0 && (
-              <Card className="bg-muted/30">
+              <Card className="bg-muted/30 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="text-sm text-muted-foreground">
                     Suggested questions:
@@ -240,10 +244,13 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
                     <Button
                       key={idx}
                       variant="ghost"
-                      className="w-full justify-between h-auto py-3 px-4 text-left hover:bg-background"
+                      className="w-full justify-between h-auto py-3 px-4 text-left hover:bg-background overflow-hidden"
                       onClick={() => handleQuestionClick(question)}
                     >
-                      <span className="text-sm flex-1 break-words">{question}</span>
+                      <span className="text-sm flex-1" style={{ 
+                        wordBreak: 'break-word', 
+                        overflowWrap: 'break-word' 
+                      }}>{question}</span>
                       <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
                     </Button>
                   ))}
@@ -252,24 +259,33 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
             )}
 
             {messages.length > 0 && (
-              <Card className="bg-background">
+              <Card className="bg-background overflow-hidden">
                 <CardHeader>
                   <CardTitle className="text-sm">Conversation</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 overflow-hidden">
                   {messages.map((message, idx) => (
                     <div
                       key={idx}
-                      className={`p-3 rounded-lg break-words overflow-wrap-anywhere ${
+                      className={`p-3 rounded-lg max-w-[500px] ${
                         message.role === "user"
-                          ? "bg-primary/10 ml-8"
-                          : "bg-muted/50 mr-8"
+                          ? "bg-primary/10 ml-auto"
+                          : "bg-muted/50 mr-auto"
                       }`}
+                      style={{
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word',
+                        whiteSpace: 'normal'
+                      }}
                     >
                       <p className="text-xs font-medium mb-1 text-muted-foreground">
                         {message.role === "user" ? "You" : "AI Assistant"}
                       </p>
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm" style={{ 
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word'
+                      }}>{message.content}</p>
                     </div>
                   ))}
                   <div ref={messagesEndRef} />
@@ -280,15 +296,15 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 border-t border-border bg-background">
-        <div className="flex justify-center">
-          <div className="w-full max-w-[600px] flex gap-2">
+      <div className="flex-shrink-0 p-4 border-t border-border bg-background overflow-x-hidden">
+        <div className="flex justify-center w-full">
+          <div className="w-full max-w-[600px] flex gap-2 min-w-0">
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Hey! Ask me anything about your PDF."
-              className="min-h-[50px] max-h-[120px] resize-none"
+              className="min-h-[50px] max-h-[120px] resize-none flex-1 min-w-0"
               disabled={isLoading || isGeneratingSummary}
             />
             <Button
