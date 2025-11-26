@@ -29,17 +29,17 @@ const PDFSummarizerPage = () => {
         <h1 className="text-2xl font-bold">PDF Summarizer</h1>
       </header>
 
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-hidden flex flex-col">
         {!pdfFile ? (
           <div className="h-full p-8">
             <PDFUploader onFileUpload={handleFileUpload} />
           </div>
         ) : (
-          <div className="h-full flex gap-0">
-            <div className="w-2/5 min-w-[400px] max-w-[600px] flex flex-col border-r border-border bg-muted/20 shadow-sm">
+          <div className="flex-1 flex gap-0 overflow-hidden">
+            <div className="w-2/5 min-w-[400px] max-w-[600px] flex flex-col border-r border-border bg-muted/20 shadow-sm overflow-y-auto">
               <PDFViewer file={pdfFile} />
             </div>
-            <div className="flex-1 flex flex-col bg-background">
+            <div className="flex-1 flex flex-col bg-background overflow-hidden">
               <AIChatPanel pdfContent={pdfText} pdfImages={pdfImages} />
             </div>
           </div>

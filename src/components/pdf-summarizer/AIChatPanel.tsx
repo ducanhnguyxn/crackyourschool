@@ -202,7 +202,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
         </h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto min-h-0">
         <div className="p-4 space-y-4">
           {isGeneratingSummary ? (
             <Card className="bg-muted/30">
