@@ -18,14 +18,14 @@ export const PDFViewer = ({ file }: PDFViewerProps) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-muted/30">
-      <div className="flex items-center justify-between p-4 border-b border-border">
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-border bg-background/50">
         <h3 className="font-semibold truncate flex-1">{file.name}</h3>
-        <span className="text-sm text-muted-foreground">
+        <span className="text-sm text-muted-foreground ml-2">
           {numPages} {numPages === 1 ? 'page' : 'pages'}
         </span>
       </div>
-      <div className="flex-1 overflow-auto p-4">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
         <Document file={file} onLoadSuccess={onDocumentLoadSuccess} className="flex flex-col items-center gap-4">
           {Array.from(new Array(numPages), (_, index) => (
             <Page
