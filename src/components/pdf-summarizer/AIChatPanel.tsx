@@ -3,7 +3,6 @@ import { Send, Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -203,7 +202,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
         </h2>
       </div>
 
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-y-auto">
         <div className="p-4 space-y-4">
           {isGeneratingSummary ? (
             <Card className="bg-muted/30">
@@ -277,7 +276,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
             </Card>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       <div className="flex-shrink-0 p-4 border-t border-border bg-background">
         <div className="flex gap-2">
