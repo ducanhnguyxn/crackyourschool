@@ -203,99 +203,103 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
       </div>
 
       <div className="flex-1 overflow-y-auto min-h-0">
-        <div className="p-4 space-y-4">
-          {isGeneratingSummary ? (
-            <Card className="bg-muted/30">
-              <CardContent className="p-6 flex items-center justify-center">
-                <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
-                <span className="text-sm text-muted-foreground">Generating summary...</span>
-              </CardContent>
-            </Card>
-          ) : summary ? (
-            <Card className="bg-primary/5 border-primary/20">
-              <CardHeader>
-                <CardTitle className="text-base flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  Summary
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">
-                  {summary}
-                </div>
-              </CardContent>
-            </Card>
-          ) : null}
-
-          {suggestedQuestions.length > 0 && (
-            <Card className="bg-muted/30">
-              <CardHeader>
-                <CardTitle className="text-sm text-muted-foreground">
-                  Suggested questions:
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {suggestedQuestions.map((question, idx) => (
-                  <Button
-                    key={idx}
-                    variant="ghost"
-                    className="w-full justify-between h-auto py-3 px-4 text-left hover:bg-background"
-                    onClick={() => handleQuestionClick(question)}
-                  >
-                    <span className="text-sm flex-1">{question}</span>
-                    <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
-                  </Button>
-                ))}
-              </CardContent>
-            </Card>
-          )}
-
-          {messages.length > 0 && (
-            <Card className="bg-background">
-              <CardHeader>
-                <CardTitle className="text-sm">Conversation</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {messages.map((message, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-3 rounded-lg ${
-                      message.role === "user"
-                        ? "bg-primary/10 ml-8"
-                        : "bg-muted/50 mr-8"
-                    }`}
-                  >
-                    <p className="text-xs font-medium mb-1 text-muted-foreground">
-                      {message.role === "user" ? "You" : "AI Assistant"}
-                    </p>
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <div className="flex justify-center p-4">
+          <div className="w-full max-w-[600px] space-y-4">
+            {isGeneratingSummary ? (
+              <Card className="bg-muted/30">
+                <CardContent className="p-6 flex items-center justify-center">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary mr-2" />
+                  <span className="text-sm text-muted-foreground">Generating summary...</span>
+                </CardContent>
+              </Card>
+            ) : summary ? (
+              <Card className="bg-primary/5 border-primary/20">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    Summary
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed break-words overflow-wrap-anywhere">
+                    {summary}
                   </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </CardContent>
-            </Card>
-          )}
+                </CardContent>
+              </Card>
+            ) : null}
+
+            {suggestedQuestions.length > 0 && (
+              <Card className="bg-muted/30">
+                <CardHeader>
+                  <CardTitle className="text-sm text-muted-foreground">
+                    Suggested questions:
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {suggestedQuestions.map((question, idx) => (
+                    <Button
+                      key={idx}
+                      variant="ghost"
+                      className="w-full justify-between h-auto py-3 px-4 text-left hover:bg-background"
+                      onClick={() => handleQuestionClick(question)}
+                    >
+                      <span className="text-sm flex-1 break-words">{question}</span>
+                      <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
+                    </Button>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
+            {messages.length > 0 && (
+              <Card className="bg-background">
+                <CardHeader>
+                  <CardTitle className="text-sm">Conversation</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {messages.map((message, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-3 rounded-lg break-words overflow-wrap-anywhere ${
+                        message.role === "user"
+                          ? "bg-primary/10 ml-8"
+                          : "bg-muted/50 mr-8"
+                      }`}
+                    >
+                      <p className="text-xs font-medium mb-1 text-muted-foreground">
+                        {message.role === "user" ? "You" : "AI Assistant"}
+                      </p>
+                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    </div>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="flex-shrink-0 p-4 border-t border-border bg-background">
-        <div className="flex gap-2">
-          <Textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Hey! Ask me anything about your PDF."
-            className="min-h-[50px] max-h-[120px] resize-none"
-            disabled={isLoading || isGeneratingSummary}
-          />
-          <Button
-            onClick={handleSend}
-            disabled={isLoading || !input.trim() || isGeneratingSummary}
-            size="icon"
-            className="h-[50px] w-[50px]"
-          >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          </Button>
+        <div className="flex justify-center">
+          <div className="w-full max-w-[600px] flex gap-2">
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Hey! Ask me anything about your PDF."
+              className="min-h-[50px] max-h-[120px] resize-none"
+              disabled={isLoading || isGeneratingSummary}
+            />
+            <Button
+              onClick={handleSend}
+              disabled={isLoading || !input.trim() || isGeneratingSummary}
+              size="icon"
+              className="h-[50px] w-[50px] flex-shrink-0"
+            >
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
