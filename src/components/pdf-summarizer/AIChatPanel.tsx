@@ -84,9 +84,12 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
         }
       }
 
+      // Strip markdown formatting (** and *) from the result
+      const cleanedResult = result.replace(/\*\*/g, '').replace(/\*/g, '');
+      
       // Extract suggested questions from the summary
       const questionPattern = /(?:Question|Q\d+|•|\d+\.)\s*(.+?\?)/gi;
-      const matches = result.match(questionPattern);
+      const matches = cleanedResult.match(questionPattern);
       if (matches) {
         const questions = matches
           .map((q) => q.replace(/^(?:Question|Q\d+|•|\d+\.)\s*/i, "").trim())
@@ -226,7 +229,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
                     wordBreak: 'break-word', 
                     overflowWrap: 'break-word' 
                   }}>
-                    {summary}
+                    {summary.replace(/\*\*/g, '').replace(/\*/g, '')}
                   </div>
                 </CardContent>
               </Card>
@@ -244,13 +247,14 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
                     <Button
                       key={idx}
                       variant="ghost"
-                      className="w-full justify-between h-auto py-3 px-4 text-left hover:bg-background overflow-hidden"
+                      className="w-full justify-between h-auto py-3 px-4 text-left hover:bg-background overflow-hidden whitespace-normal"
                       onClick={() => handleQuestionClick(question)}
                     >
-                      <span className="text-sm flex-1" style={{ 
+                      <span className="text-sm flex-1 break-words" style={{ 
                         wordBreak: 'break-word', 
-                        overflowWrap: 'break-word' 
-                      }}>{question}</span>
+                        overflowWrap: 'break-word',
+                        whiteSpace: 'normal'
+                      }}>{question.replace(/\*\*/g, '').replace(/\*/g, '')}</span>
                       <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
                     </Button>
                   ))}
@@ -285,7 +289,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word'
-                      }}>{message.content}</p>
+                      }}>{message.content.replace(/\*\*/g, '').replace(/\*/g, '')}</p>
                     </div>
                   ))}
                   <div ref={messagesEndRef} />
