@@ -53,8 +53,13 @@ export const QuickActions = () => {
       <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {actions.map((action) => {
-          const isLinked = action.label === "AI Tutor" || action.label === "Mind Map" || action.label === "PDF Summarizer";
-          const linkPath = action.label === "AI Tutor" ? "/ai-tutor" : action.label === "Mind Map" ? "/mind-map" : "/pdf-summarizer";
+          const isLinked = action.label === "AI Tutor" || action.label === "Mind Map" || action.label === "PDF Summarizer" || action.label === "AI Quiz";
+          const linkPath = 
+            action.label === "AI Tutor" ? "/ai-tutor" : 
+            action.label === "Mind Map" ? "/mind-map" : 
+            action.label === "PDF Summarizer" ? "/pdf-summarizer" :
+            action.label === "AI Quiz" ? "/quiz" :
+            "#";
           
           const buttonContent = (
             <>
