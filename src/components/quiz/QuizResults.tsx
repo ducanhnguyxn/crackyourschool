@@ -41,7 +41,7 @@ export const QuizResults = ({
       <Card className="p-8 text-center">
         <Trophy className={`w-16 h-16 mx-auto mb-4 ${getScoreColor()}`} />
         <h2 className="text-3xl font-bold mb-2">Quiz Completed!</h2>
-        <p className="text-5xl font-bold mb-4 ${getScoreColor()}">
+        <p className={`text-5xl font-bold mb-4 ${getScoreColor()}`}>
           {score.percentage.toFixed(0)}%
         </p>
         <p className="text-lg text-muted-foreground mb-6">
