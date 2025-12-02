@@ -1,1 +1,13 @@
 project_id = "ejakrzhkyfzxeuqcyxrp"
+
+[functions.ai-tutor]
+verify_jwt = false
+
+[functions.generate-quiz]
+verify_jwt = false
+
+[functions.generate-flashcards]
+verify_jwt = false
+
+[functions.pdf-chat]
+verify_jwt = false
