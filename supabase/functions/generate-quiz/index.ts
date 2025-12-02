@@ -38,6 +38,9 @@ Requirements:
 - Mix of multiple choice (7-8 questions) and open-ended (2-3 questions)
 - Multiple choice questions must have exactly 4 options (A, B, C, D)
 - Mark the correct answer for multiple choice questions
+- IMPORTANT: Open-ended questions MUST ask about definitions or key terms only
+- Open-ended answers MUST be exactly 1-2 words (e.g., "photosynthesis", "mitochondria", "supply demand")
+- Do NOT create open-ended questions requiring long explanations
 - Vary difficulty: 3 easy, 4 medium, 3 hard
 - Cover all important topics from the document
 - Use clear, simple language
