@@ -13,8 +13,8 @@ export const Hero = () => {
           </Badge>
 
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            Your FREE AI Study Partner for{" "}
-            <span className="italic">Success & Sanity</span>
+            CRACK Your STUDY. CRUSH Your EXAMS.{" "}
+            <span className="italic">Let AI Keep You Ahead of EVERYONE.</span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
