@@ -10,7 +10,7 @@ export const Navigation = () => {
           <Link to="/" className="flex items-center gap-2">
             <div className="flex items-center gap-2 text-xl font-bold">
               <BookOpen className="w-6 h-6 text-primary" />
-              <span>Crack</span>
+              <span>crackyourschool</span>
             </div>
           </Link>
 
