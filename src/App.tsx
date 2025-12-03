@@ -10,6 +10,7 @@ import MindMapPage from "./pages/MindMapPage";
 import PDFSummarizerPage from "./pages/PDFSummarizerPage";
 import QuizPage from "./pages/QuizPage";
 import FlashcardPage from "./pages/FlashcardPage";
+import SchedulePage from "./pages/SchedulePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/pdf-summarizer" element={<PDFSummarizerPage />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/flashcards" element={<FlashcardPage />} />
+          <Route path="/schedule" element={<SchedulePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
