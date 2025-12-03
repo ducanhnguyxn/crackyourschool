@@ -79,7 +79,7 @@ export const UpcomingTasks = () => {
   return (
     <Card className="p-6">
       <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-        <Calendar className="w-5 h-5 text-primary" />
+        <Calendar className="w-5 h-5 text-amber-500" />
         Upcoming Tasks
       </h2>
       <div className="space-y-3">
@@ -150,7 +150,7 @@ export const UpcomingTasks = () => {
       ) : (
         <button
           onClick={() => setShowAddForm(true)}
-          className="w-full mt-4 p-3 rounded-lg border border-dashed border-primary/50 text-sm font-medium text-primary hover:bg-primary/5 transition-colors"
+          className="w-full mt-4 p-3 rounded-lg border border-dashed border-amber-400/50 text-sm font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors"
         >
           + Add New Task
         </button>

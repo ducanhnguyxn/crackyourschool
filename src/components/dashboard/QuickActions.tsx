@@ -8,48 +8,48 @@ export const QuickActions = () => {
       icon: Brain,
       label: "AI Quiz",
       description: "Generate practice questions",
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
+      color: "text-violet-600 dark:text-violet-400",
+      bgColor: "bg-violet-100 dark:bg-violet-900/30",
     },
     {
       icon: FileText,
       label: "PDF Summarizer",
       description: "Analyze your documents",
-      color: "text-primary",
-      bgColor: "bg-primary/10",
+      color: "text-amber-600 dark:text-amber-400",
+      bgColor: "bg-amber-100 dark:bg-amber-900/30",
     },
     {
       icon: Sparkles,
       label: "AI Tutor",
       description: "Get instant help",
-      color: "text-pink-500",
-      bgColor: "bg-pink-500/10",
+      color: "text-pink-600 dark:text-pink-400",
+      bgColor: "bg-pink-100 dark:bg-pink-900/30",
     },
     {
       icon: BookOpen,
       label: "Flashcards",
       description: "Create new deck",
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
+      color: "text-sky-600 dark:text-sky-400",
+      bgColor: "bg-sky-100 dark:bg-sky-900/30",
     },
     {
       icon: Lightbulb,
       label: "Mind Map",
       description: "Visualize concepts",
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
     },
     {
       icon: Calendar,
       label: "Schedule",
       description: "Plan your study time",
-      color: "text-orange-500",
-      bgColor: "bg-orange-500/10",
+      color: "text-orange-600 dark:text-orange-400",
+      bgColor: "bg-orange-100 dark:bg-orange-900/30",
     },
   ];
 
   return (
-    <Card className="p-6">
+    <div>
       <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {actions.map((action) => {
@@ -79,7 +79,7 @@ export const QuickActions = () => {
               <Link
                 key={action.label}
                 to={linkPath}
-                className="flex flex-col items-center gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-all hover:scale-105 hover:shadow-md group"
+                className="flex flex-col items-center gap-3 p-5 rounded-xl bg-card border border-border hover:border-amber-300 dark:hover:border-amber-700 transition-all hover:shadow-lg group"
               >
                 {buttonContent}
               </Link>
@@ -89,13 +89,13 @@ export const QuickActions = () => {
           return (
             <button
               key={action.label}
-              className="flex flex-col items-center gap-3 p-4 rounded-lg border border-border hover:border-primary/50 transition-all hover:scale-105 hover:shadow-md group"
+              className="flex flex-col items-center gap-3 p-5 rounded-xl bg-card border border-border hover:border-amber-300 dark:hover:border-amber-700 transition-all hover:shadow-lg group"
             >
               {buttonContent}
             </button>
           );
         })}
       </div>
-    </Card>
+    </div>
   );
 };

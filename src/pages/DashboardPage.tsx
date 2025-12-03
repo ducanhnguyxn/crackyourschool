@@ -7,7 +7,7 @@ import { UpcomingTasks } from "@/components/dashboard/UpcomingTasks";
 
 const DashboardPage = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <Navigation />
       <main className="container mx-auto px-4 pt-24 pb-16">
         <div className="mb-8">

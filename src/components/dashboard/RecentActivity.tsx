@@ -41,14 +41,14 @@ export const RecentActivity = () => {
   return (
     <Card className="p-6">
       <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {activities.map((activity, index) => (
           <div
             key={index}
-            className="flex items-start gap-4 p-4 rounded-lg border border-border hover:border-primary/50 transition-all hover:bg-accent/50"
+            className="flex items-start gap-4 p-4 rounded-xl border border-border hover:border-amber-300 dark:hover:border-amber-700 transition-all hover:bg-amber-50/50 dark:hover:bg-amber-950/20"
           >
-            <div className="p-2 rounded-full bg-primary/10">
-              <activity.icon className="w-5 h-5 text-primary" />
+            <div className="p-2 rounded-full bg-amber-100 dark:bg-amber-900/30">
+              <activity.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
