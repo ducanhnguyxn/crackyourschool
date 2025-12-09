@@ -38,18 +38,18 @@ export const QuizResults = ({
 
   return (
     <div className="space-y-6">
-      <Card className="p-8 text-center">
-        <Trophy className={`w-16 h-16 mx-auto mb-4 ${getScoreColor()}`} />
-        <h2 className="text-3xl font-bold mb-2">Quiz Completed!</h2>
-        <p className={`text-5xl font-bold mb-4 ${getScoreColor()}`}>
+      <Card className="p-6 md:p-8 text-center">
+        <Trophy className={`w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 ${getScoreColor()}`} />
+        <h2 className="text-2xl md:text-3xl font-bold mb-2">Quiz Completed!</h2>
+        <p className={`text-4xl md:text-5xl font-bold mb-4 ${getScoreColor()}`}>
           {score.percentage.toFixed(0)}%
         </p>
-        <p className="text-lg text-muted-foreground mb-6">
+        <p className="text-base md:text-lg text-muted-foreground mb-6">
           You got {score.correct} out of {score.total} questions correct
         </p>
-        <div className="flex gap-3 justify-center">
-          <Button onClick={onRetake}>Retake Quiz</Button>
-          <Button variant="outline" onClick={onNewQuiz}>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button onClick={onRetake} className="w-full sm:w-auto">Retake Quiz</Button>
+          <Button variant="outline" onClick={onNewQuiz} className="w-full sm:w-auto">
             New Quiz
           </Button>
         </div>
@@ -63,19 +63,19 @@ export const QuizResults = ({
             const isCorrect = userAnswer?.answer.toLowerCase().trim() === question.correctAnswer.toLowerCase().trim();
 
             return (
-              <Card key={question.id} className="p-6">
-                <div className="flex items-start gap-3 mb-3">
+              <Card key={question.id} className="p-4 md:p-6">
+                <div className="flex items-start gap-2 md:gap-3 mb-3">
                   {isCorrect ? (
-                    <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400 shrink-0 mt-1" />
+                    <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 dark:text-green-400 shrink-0 mt-1" />
                   ) : (
-                    <XCircle className="w-6 h-6 text-red-600 dark:text-red-400 shrink-0 mt-1" />
+                    <XCircle className="w-5 h-5 md:w-6 md:h-6 text-red-600 dark:text-red-400 shrink-0 mt-1" />
                   )}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-semibold">Question {index + 1}</span>
-                      <Badge variant="outline">{question.difficulty}</Badge>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="font-semibold text-sm md:text-base">Question {index + 1}</span>
+                      <Badge variant="outline" className="text-xs">{question.difficulty}</Badge>
                     </div>
-                    <p className="mb-3 break-words overflow-wrap-anywhere">{question.question}</p>
+                    <p className="mb-3 break-words overflow-wrap-anywhere text-sm md:text-base">{question.question}</p>
 
                     {question.type === "multiple-choice" && question.options && (
                       <div className="space-y-2 mb-3">
@@ -87,7 +87,7 @@ export const QuizResults = ({
                           return (
                             <div
                               key={optionIndex}
-                              className={`p-3 rounded-lg border ${
+                              className={`p-2 md:p-3 rounded-lg border ${
                                 isCorrectOption
                                   ? "border-green-500 bg-green-500/10"
                                   : isUserAnswer
@@ -95,14 +95,16 @@ export const QuizResults = ({
                                   : "border-border"
                               }`}
                             >
-                              <span className="font-semibold">{optionLetter}. </span>
-                              <span className="break-words overflow-wrap-anywhere">{option}</span>
-                              {isCorrectOption && (
-                                <Badge className="ml-2 bg-green-500">Correct</Badge>
-                              )}
-                              {isUserAnswer && !isCorrectOption && (
-                                <Badge className="ml-2 bg-red-500">Your Answer</Badge>
-                              )}
+                              <div className="flex flex-wrap items-start gap-1 md:gap-2">
+                                <span className="font-semibold text-sm md:text-base shrink-0">{optionLetter}. </span>
+                                <span className="break-words overflow-wrap-anywhere text-sm md:text-base flex-1 min-w-0">{option}</span>
+                                {isCorrectOption && (
+                                  <Badge className="ml-auto shrink-0 bg-green-500 text-xs">Correct</Badge>
+                                )}
+                                {isUserAnswer && !isCorrectOption && (
+                                  <Badge className="ml-auto shrink-0 bg-red-500 text-xs">Your Answer</Badge>
+                                )}
+                              </div>
                             </div>
                           );
                         })}

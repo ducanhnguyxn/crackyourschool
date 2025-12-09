@@ -52,29 +52,29 @@ export const QuizInterface = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-bold">Quiz Questions</h2>
           <p className="text-sm text-muted-foreground">
             Answer all {questions.length} questions and submit when ready
           </p>
         </div>
-        <Button variant="outline" onClick={onNewQuiz}>
+        <Button variant="outline" onClick={onNewQuiz} className="shrink-0">
           New Quiz
         </Button>
       </div>
 
       {questions.map((question, index) => (
-        <Card key={question.id} className="p-6">
+        <Card key={question.id} className="p-4 md:p-6">
           <div className="flex items-start justify-between mb-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-semibold text-lg">Question {index + 1}</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span className="font-semibold text-base md:text-lg">Question {index + 1}</span>
                 <Badge className={getDifficultyColor(question.difficulty)}>
                   {question.difficulty}
                 </Badge>
               </div>
-              <p className="text-base">{question.question}</p>
+              <p className="text-sm md:text-base break-words overflow-wrap-anywhere">{question.question}</p>
             </div>
           </div>
 
@@ -88,17 +88,17 @@ export const QuizInterface = ({
                   <button
                     key={optionIndex}
                     onClick={() => handleAnswerSelect(question.id, optionLetter)}
-                    className={`w-full text-left p-4 rounded-lg border transition-all ${
+                    className={`w-full text-left p-3 md:p-4 rounded-lg border transition-all ${
                       isSelected
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50"
                     }`}
                   >
-                    <div className="flex items-start gap-3">
-                      <span className="font-semibold text-primary shrink-0">
+                    <div className="flex items-start gap-2 md:gap-3">
+                      <span className="font-semibold text-primary shrink-0 text-sm md:text-base">
                         {optionLetter}.
                       </span>
-                      <span className="break-words overflow-wrap-anywhere">{option}</span>
+                      <span className="break-words overflow-wrap-anywhere text-sm md:text-base">{option}</span>
                     </div>
                   </button>
                 );
@@ -109,7 +109,7 @@ export const QuizInterface = ({
               placeholder="Type your answer here..."
               value={getAnswer(question.id)}
               onChange={(e) => handleAnswerSelect(question.id, e.target.value)}
-              className="min-h-[100px] break-words overflow-wrap-anywhere"
+              className="min-h-[100px] break-words overflow-wrap-anywhere resize-none"
               style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
             />
           )}

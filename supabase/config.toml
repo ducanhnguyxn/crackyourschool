@@ -1,7 +1,7 @@
 project_id = "ejakrzhkyfzxeuqcyxrp"
 
 [functions.ai-tutor]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-quiz]
 verify_jwt = false
@@ -10,4 +10,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.pdf-chat]
+verify_jwt = false
+
+[functions.create-checkout-session]
+verify_jwt = true
+
+[functions.stripe-webhook]
 verify_jwt = false

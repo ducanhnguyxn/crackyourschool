@@ -198,16 +198,16 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
 
   return (
     <div className="h-full flex flex-col bg-background overflow-x-hidden">
-      <div className="flex-shrink-0 p-4 border-b border-border">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
+      <div className="flex-shrink-0 p-3 md:p-4 border-b border-border">
+        <h2 className="text-base md:text-lg font-semibold flex items-center gap-2">
+          <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary shrink-0" />
           AI Assistant
         </h2>
       </div>
 
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-        <div className="flex justify-center p-4 w-full">
-          <div className="w-full max-w-[600px] space-y-4 min-w-0">
+        <div className="flex justify-center p-3 md:p-4 w-full">
+          <div className="w-full max-w-[600px] space-y-3 md:space-y-4 min-w-0">
             {isGeneratingSummary ? (
               <Card className="bg-muted/30">
                 <CardContent className="p-6 flex items-center justify-center">
@@ -300,7 +300,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 border-t border-border bg-background overflow-x-hidden">
+      <div className="flex-shrink-0 p-3 md:p-4 border-t border-border bg-background overflow-x-hidden">
         <div className="flex justify-center w-full">
           <div className="w-full max-w-[600px] flex gap-2 min-w-0">
             <Textarea
@@ -308,14 +308,14 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Hey! Ask me anything about your PDF."
-              className="min-h-[50px] max-h-[120px] resize-none flex-1 min-w-0"
+              className="min-h-[50px] max-h-[120px] resize-none flex-1 min-w-0 text-sm md:text-base"
               disabled={isLoading || isGeneratingSummary}
             />
             <Button
               onClick={handleSend}
               disabled={isLoading || !input.trim() || isGeneratingSummary}
               size="icon"
-              className="h-[50px] w-[50px] flex-shrink-0"
+              className="h-[50px] w-[50px] md:h-[50px] md:w-[50px] flex-shrink-0"
             >
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </Button>

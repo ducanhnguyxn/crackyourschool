@@ -1,13 +1,16 @@
 import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PDFUploaderProps {
-  onFileUpload: (file: File, text: string, images: string[]) => void;
+  onFileUpload: (file: File, text: string, images: string[], pdfId?: string) => void;
 }
 
 export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
   const { toast } = useToast();
+  const { user, profile } = useAuth();
 
   const extractTextAndImagesFromPDF = async (file: File): Promise<{ text: string; images: string[] }> => {
     try {
@@ -58,6 +61,15 @@ export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to upload PDFs",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (file.type !== 'application/pdf') {
       toast({
         title: "Invalid file type",
@@ -68,16 +80,62 @@ export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
     }
 
     try {
+      // Extract text and images first
       const { text, images } = await extractTextAndImagesFromPDF(file);
-      onFileUpload(file, text, images);
+
+      // Upload PDF to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const filePath = `pdfs/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('pdfs')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Save PDF metadata to database
+      const { data: pdfData, error: dbError } = await supabase
+        .from('pdfs')
+        .insert({
+          user_id: user.id,
+          file_name: file.name,
+          file_path: filePath,
+          file_size: file.size,
+          extracted_text: text.substring(0, 50000), // Store first 50k chars
+        })
+        .select()
+        .single();
+
+      if (dbError) {
+        // If DB insert fails, try to delete the uploaded file
+        await supabase.storage.from('pdfs').remove([filePath]);
+        throw dbError;
+      }
+
+      // Increment PDF count for free users (Pro users have unlimited)
+      if (!profile?.is_pro) {
+        await supabase
+          .from('user_profiles')
+          .update({ pdf_count: (profile?.pdf_count || 0) + 1 })
+          .eq('id', user.id);
+      }
+
+      onFileUpload(file, text, images, pdfData.id);
       toast({
         title: "PDF uploaded successfully",
         description: "You can now chat with your document (including images)",
       });
     } catch (error) {
+      console.error('Error uploading PDF:', error);
       toast({
         title: "Error processing PDF",
-        description: "Failed to extract text from PDF",
+        description: error instanceof Error ? error.message : "Failed to upload PDF",
         variant: "destructive",
       });
     }

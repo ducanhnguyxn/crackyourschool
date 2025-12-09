@@ -1,9 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatMessage } from "./ChatMessage";
 import { Send, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -11,8 +14,11 @@ export const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { user, profile, refreshProfile } = useAuth();
+  const navigate = useNavigate();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -21,6 +27,18 @@ export const ChatInterface = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Save conversation when messages change (debounced)
+  useEffect(() => {
+    if (messages.length > 0 && messages.length % 2 === 0 && user) {
+      // Only save when we have pairs of messages (user + assistant)
+      const timeoutId = setTimeout(() => {
+        saveConversation(messages);
+      }, 1000); // Debounce by 1 second
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [messages, user, saveConversation]);
 
   const streamChat = async (userMessages: Message[]) => {
     const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
@@ -86,12 +104,15 @@ export const ChatInterface = () => {
             assistantContent += content;
             setMessages((prev) => {
               const last = prev[prev.length - 1];
+              let updated;
               if (last?.role === "assistant") {
-                return prev.map((m, i) =>
+                updated = prev.map((m, i) =>
                   i === prev.length - 1 ? { ...m, content: assistantContent } : m
                 );
+              } else {
+                updated = [...prev, { role: "assistant", content: assistantContent }];
               }
-              return [...prev, { role: "assistant", content: assistantContent }];
+              return updated;
             });
           }
         } catch {
@@ -102,16 +123,80 @@ export const ChatInterface = () => {
     }
   };
 
+  const saveConversation = useCallback(async (updatedMessages: Message[]) => {
+    if (!user) return;
+
+    try {
+      if (!conversationId) {
+        // Create new conversation
+        const { data, error } = await supabase
+          .from('ai_tutor_conversations')
+          .insert({
+            user_id: user.id,
+            title: updatedMessages[0]?.content?.substring(0, 50) || 'New Conversation',
+            messages: updatedMessages,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        setConversationId(data.id);
+      } else {
+        // Update existing conversation
+        await supabase
+          .from('ai_tutor_conversations')
+          .update({
+            messages: updatedMessages,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', conversationId);
+      }
+    } catch (error) {
+      console.error('Error saving conversation:', error);
+      // Don't show error to user, just log it
+    }
+  }, [user, conversationId]);
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
+    // Check usage limits for free users before sending
+    if (!profile?.is_pro) {
+      const questionsUsed = profile?.questions_used_this_month || 0;
+      if (questionsUsed >= 30) {
+        toast({
+          title: "Question limit reached",
+          description: "You've used all 30 questions this month. Upgrade to Pro for unlimited questions!",
+          variant: "destructive",
+        });
+        navigate("/pricing");
+        return;
+      }
+    }
+
     const userMessage: Message = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
 
     try {
-      await streamChat([...messages, userMessage]);
+      await streamChat(updatedMessages);
+      
+      // Increment question count for free users after successful message
+      if (!profile?.is_pro && user) {
+        await supabase
+          .from('user_profiles')
+          .update({ 
+            questions_used_this_month: (profile?.questions_used_this_month || 0) + 1 
+          })
+          .eq('id', user.id);
+        
+        // Refresh profile to update the count
+        await refreshProfile();
+      }
+      
+      // Conversation will be saved via useEffect when messages state updates
     } catch (error) {
       console.error("Chat error:", error);
       toast({
@@ -132,21 +217,25 @@ export const ChatInterface = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
-      <div className="flex-1 overflow-y-auto">
-        {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-center p-8">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold">AI Tutor</h2>
-              <p className="text-muted-foreground max-w-md">
-                Ask me anything! I'm here to help you understand concepts, solve problems, and learn effectively.
-              </p>
+    <div className="flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)]">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-4">
+        <div className="max-w-4xl mx-auto py-4">
+          {messages.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-center p-8">
+              <div className="space-y-4">
+                <h2 className="text-xl md:text-2xl font-bold">AI Tutor</h2>
+                <p className="text-sm md:text-base text-muted-foreground max-w-md">
+                  Ask me anything! I'm here to help you understand concepts, solve problems, and learn effectively.
+                </p>
+              </div>
             </div>
-          </div>
-        ) : (
-          messages.map((msg, idx) => <ChatMessage key={idx} role={msg.role} content={msg.content} />)
-        )}
-        <div ref={messagesEndRef} />
+          ) : (
+            <div className="space-y-4">
+              {messages.map((msg, idx) => <ChatMessage key={idx} role={msg.role} content={msg.content} />)}
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
       <div className="border-t bg-background p-4">

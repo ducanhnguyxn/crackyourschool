@@ -69,41 +69,41 @@ export const FlashcardViewer = ({ flashcards, onNewDeck }: FlashcardViewerProps)
   return (
     <div className="space-y-6">
       {/* Header with progress */}
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1 flex-1 min-w-0">
           <p className="text-sm text-muted-foreground">
             Card {currentIndex + 1} of {cards.length}
           </p>
-          <Progress value={progress} className="w-48 h-2" />
+          <Progress value={progress} className="w-full sm:w-48 h-2" />
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={handleShuffle}>
             <Shuffle className="w-4 h-4 mr-2" />
-            Shuffle
+            <span className="hidden sm:inline">Shuffle</span>
           </Button>
           <Button variant="outline" size="sm" onClick={handleRestart}>
             <RotateCcw className="w-4 h-4 mr-2" />
-            Restart
+            <span className="hidden sm:inline">Restart</span>
           </Button>
           <Button variant="outline" size="sm" onClick={handleExportCSV}>
             <Download className="w-4 h-4 mr-2" />
-            Export CSV
+            <span className="hidden sm:inline">Export</span>
           </Button>
           <Button variant="outline" size="sm" onClick={onNewDeck}>
             <Plus className="w-4 h-4 mr-2" />
-            New Deck
+            <span className="hidden sm:inline">New Deck</span>
           </Button>
         </div>
       </div>
 
       {/* Flashcard */}
-      <div className="flex justify-center">
+      <div className="flex justify-center px-4">
         <div 
           className="w-full max-w-2xl perspective-1000 cursor-pointer"
           onClick={() => setIsFlipped(!isFlipped)}
         >
           <div 
-            className={`relative w-full h-80 transition-transform duration-500 transform-style-preserve-3d ${
+            className={`relative w-full h-64 md:h-80 transition-transform duration-500 transform-style-preserve-3d ${
               isFlipped ? "rotate-y-180" : ""
             }`}
             style={{
@@ -113,23 +113,23 @@ export const FlashcardViewer = ({ flashcards, onNewDeck }: FlashcardViewerProps)
           >
             {/* Front of card */}
             <Card 
-              className="absolute inset-0 p-8 flex flex-col items-center justify-center backface-hidden bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20"
+              className="absolute inset-0 p-4 md:p-8 flex flex-col items-center justify-center backface-hidden bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20"
               style={{ backfaceVisibility: "hidden" }}
             >
               <Badge className={`mb-4 ${getDifficultyColor(currentCard.difficulty)}`}>
                 {currentCard.difficulty}
               </Badge>
-              <p className="text-2xl font-semibold text-center leading-relaxed">
+              <p className="text-lg md:text-2xl font-semibold text-center leading-relaxed break-words overflow-wrap-anywhere px-2">
                 {currentCard.front}
               </p>
-              <p className="text-sm text-muted-foreground mt-6">
+              <p className="text-xs md:text-sm text-muted-foreground mt-4 md:mt-6">
                 Click to reveal answer
               </p>
             </Card>
 
             {/* Back of card */}
             <Card 
-              className="absolute inset-0 p-8 flex flex-col items-center justify-center backface-hidden bg-gradient-to-br from-green-500/5 to-green-500/10 border-green-500/20"
+              className="absolute inset-0 p-4 md:p-8 flex flex-col items-center justify-center backface-hidden bg-gradient-to-br from-green-500/5 to-green-500/10 border-green-500/20"
               style={{ 
                 backfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
@@ -138,10 +138,10 @@ export const FlashcardViewer = ({ flashcards, onNewDeck }: FlashcardViewerProps)
               <Badge className="mb-4 bg-green-500/10 text-green-600 border-green-500/20">
                 Answer
               </Badge>
-              <p className="text-xl text-center leading-relaxed">
+              <p className="text-base md:text-xl text-center leading-relaxed break-words overflow-wrap-anywhere px-2">
                 {currentCard.back}
               </p>
-              <p className="text-sm text-muted-foreground mt-6">
+              <p className="text-xs md:text-sm text-muted-foreground mt-4 md:mt-6">
                 Click to see question
               </p>
             </Card>
@@ -173,12 +173,12 @@ export const FlashcardViewer = ({ flashcards, onNewDeck }: FlashcardViewerProps)
       {/* Card list preview */}
       <Card className="p-4">
         <h3 className="font-semibold mb-3">All Cards</h3>
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
           {cards.map((card, index) => (
             <button
-              key={card.id}
+              key={card.id || index}
               onClick={() => { setCurrentIndex(index); setIsFlipped(false); }}
-              className={`flex-shrink-0 w-12 h-12 rounded-lg border text-sm font-medium transition-colors ${
+              className={`flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-lg border text-xs md:text-sm font-medium transition-colors ${
                 index === currentIndex 
                   ? "bg-primary text-primary-foreground border-primary" 
                   : "bg-muted hover:bg-muted/80 border-border"

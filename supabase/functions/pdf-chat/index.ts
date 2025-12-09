@@ -14,9 +14,9 @@ serve(async (req) => {
   try {
     const { messages, pdfContent, pdfImages, action } = await req.json();
     
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     let systemPrompt = `You are an AI assistant helping users understand and analyze PDF documents. `;
@@ -49,20 +49,21 @@ serve(async (req) => {
       systemPrompt += `\n\nAnalyze this PDF (including any images) and suggest 4-6 useful action buttons the user might want (e.g., "Extract Dates", "Find Definitions", "List Key Topics", "Identify Main Arguments", "Extract Statistics", "Describe Images"). Return ONLY a JSON array of action objects with "label" and "prompt" fields, nothing else.`;
     }
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: Deno.env.get('OPENAI_MODEL') || 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           ...contentMessages,
           ...messages
         ],
         stream: true,
+        temperature: 0.7,
       }),
     });
 

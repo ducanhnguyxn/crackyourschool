@@ -17,9 +17,9 @@ export const ChatMessage = ({ role, content }: ChatMessageProps) => {
       )}>
         {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
       </div>
-      <div className="flex-1 space-y-2">
+      <div className="flex-1 min-w-0 space-y-2">
         <p className="text-sm font-medium">{isUser ? "You" : "AI Tutor"}</p>
-        <div className="text-sm text-foreground whitespace-pre-wrap">{content}</div>
+        <div className="text-sm text-foreground whitespace-pre-wrap break-words overflow-wrap-anywhere">{content}</div>
       </div>
     </div>
   );

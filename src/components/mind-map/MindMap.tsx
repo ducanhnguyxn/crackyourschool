@@ -64,21 +64,23 @@ export const MindMap = () => {
   };
 
   return (
-    <Card className="p-6">
-      <div className="mb-6 flex gap-4">
+    <Card className="p-4 md:p-6">
+      <div className="mb-4 md:mb-6 flex flex-col sm:flex-row gap-2 md:gap-4">
         <Input
           placeholder="Enter a new topic..."
           value={newNodeText}
           onChange={(e) => setNewNodeText(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && addNode()}
+          className="flex-1"
         />
-        <Button onClick={addNode} className="gap-2">
+        <Button onClick={addNode} className="gap-2 shrink-0">
           <Plus className="w-4 h-4" />
-          Add Node
+          <span className="hidden sm:inline">Add Node</span>
+          <span className="sm:hidden">Add</span>
         </Button>
       </div>
 
-      <div className="relative w-full h-[600px] border border-border rounded-lg bg-muted/20 overflow-hidden">
+      <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] border border-border rounded-lg bg-muted/20 overflow-hidden">
         {nodes.map((node) => (
           <div
             key={node.id}
@@ -97,19 +99,19 @@ export const MindMap = () => {
               top: `${node.y}%`,
               transform: "translate(-50%, -50%)",
             }}
-            className={`${node.color} px-4 py-3 rounded-lg border-2 cursor-move hover:scale-105 transition-transform shadow-lg group`}
+            className={`${node.color} px-2 md:px-4 py-2 md:py-3 rounded-lg border-2 cursor-move hover:scale-105 transition-transform shadow-lg group max-w-[200px] md:max-w-none`}
             onClick={() => setSelectedNode(node.id)}
           >
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-sm">{node.text}</span>
+            <div className="flex items-center gap-1 md:gap-2">
+              <span className="font-medium text-xs md:text-sm break-words overflow-wrap-anywhere">{node.text}</span>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   deleteNode(node.id);
                 }}
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
               >
-                <Trash2 className="w-4 h-4 text-destructive" />
+                <Trash2 className="w-3 h-3 md:w-4 md:h-4 text-destructive" />
               </button>
             </div>
           </div>
