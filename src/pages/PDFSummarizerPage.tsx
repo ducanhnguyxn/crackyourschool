@@ -12,10 +12,11 @@ const PDFSummarizerPage = () => {
   const [pdfText, setPdfText] = useState<string>("");
   const [pdfImages, setPdfImages] = useState<string[]>([]);
 
-  const handleFileUpload = (file: File, text: string, images: string[]) => {
+  const handleFileUpload = (file: File, text: string, images: string[], pdfId?: string) => {
     setPdfFile(file);
     setPdfText(text);
     setPdfImages(images);
+    // pdfId is available for future use (e.g., saving chat history linked to PDF)
   };
 
   return (
