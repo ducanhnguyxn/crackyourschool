@@ -49,7 +49,7 @@ export const Features = () => {
             Turn Any Document Into Actionable Insights
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto px-4">
-            Stop manually creating study materials. STURIO's generative AI reads your lecture notes, 
+            Stop manually creating study materials. CrackYourSchool's generative AI reads your lecture notes,
             PDFs, and documents to instantly create engaging quizzes, concise summaries, 
             and effective flashcards, saving you hours of prep time.
           </p>

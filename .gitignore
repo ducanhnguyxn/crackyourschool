@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables and local Supabase CLI cache
+.env
+supabase/.temp/

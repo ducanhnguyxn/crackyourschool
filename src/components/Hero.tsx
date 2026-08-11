@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import dashboardPreview from "@/assets/dashboard-preview.png";
 
 export const Hero = () => {
@@ -20,23 +21,27 @@ export const Hero = () => {
           <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
             Meet your new, completely free AI study partner, designed for academic success. 
             From an instant quiz generator and smart summaries to intelligent flashcards, 
-            STURIO provides all the tools you need to excel in your study sessions.
+            CrackYourSchool provides all the tools you need to excel in your study sessions.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 pt-2 md:pt-4 px-4">
-            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-sm md:text-base px-6 md:px-8 py-5 md:py-6 rounded-full shadow-lg hover:shadow-xl transition-all w-full sm:w-auto">
-              Start Learning Now
-              <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
+            <Button size="lg" asChild className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-sm md:text-base px-6 md:px-8 py-5 md:py-6 rounded-full shadow-lg hover:shadow-xl transition-all w-full sm:w-auto">
+              <Link to="/dashboard">
+                Start Learning Now
+                <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="font-semibold text-sm md:text-base px-6 md:px-8 py-5 md:py-6 rounded-full border-2 hover:bg-secondary w-full sm:w-auto">
-              Explore Features
+            <Button size="lg" variant="outline" asChild className="font-semibold text-sm md:text-base px-6 md:px-8 py-5 md:py-6 rounded-full border-2 hover:bg-secondary w-full sm:w-auto">
+              <Link to="#features">
+                Explore Features
+              </Link>
             </Button>
           </div>
 
           <div className="pt-8 md:pt-12 px-2">
             <img 
               src={dashboardPreview} 
-              alt="STURIO Dashboard Preview showing AI study tools and features" 
+              alt="CrackYourSchool Dashboard Preview showing AI study tools and features"
               className="w-full rounded-xl md:rounded-2xl shadow-card-hover border border-border"
             />
           </div>

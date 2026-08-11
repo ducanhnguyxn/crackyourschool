@@ -8,7 +8,7 @@ export const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-xl font-bold">
               <BookOpen className="w-6 h-6 text-primary" />
-              <span>STURIO</span>
+              <span>CrackYourSchool</span>
             </div>
             <p className="text-background/70 leading-relaxed">
               Your AI-powered study companion for academic success and peace of mind.
@@ -61,7 +61,7 @@ export const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-background/20 text-center text-background/60 text-sm">
-          <p>© 2024 STURIO. All rights reserved. Made with AI for learners everywhere.</p>
+          <p>© 2024 CrackYourSchool. All rights reserved. Made with AI for learners everywhere.</p>
         </div>
       </div>
     </footer>
