@@ -41,7 +41,7 @@ serve(async (req) => {
     }
 
     // Create or get Stripe customer
-    const { data: profile } = await fetch(
+    const profileRes = await fetch(
       `${Deno.env.get('SUPABASE_URL')}/rest/v1/user_profiles?id=eq.${userId}`,
       {
         headers: {
@@ -49,8 +49,13 @@ serve(async (req) => {
           'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''}`,
         },
       }
-    ).then(res => res.json());
+    );
 
+    if (!profileRes.ok) {
+      throw new Error(`Failed to look up user profile: ${profileRes.status} ${await profileRes.text()}`);
+    }
+
+    const profile = await profileRes.json();
     let customerId = profile?.[0]?.stripe_customer_id;
 
     if (!customerId) {
@@ -64,7 +69,7 @@ serve(async (req) => {
       customerId = customer.id;
 
       // Update user profile with customer ID
-      await fetch(
+      const updateRes = await fetch(
         `${Deno.env.get('SUPABASE_URL')}/rest/v1/user_profiles?id=eq.${userId}`,
         {
           method: 'PATCH',
@@ -78,6 +83,10 @@ serve(async (req) => {
           }),
         }
       );
+
+      if (!updateRes.ok) {
+        console.error('Failed to save stripe_customer_id:', updateRes.status, await updateRes.text());
+      }
     }
 
     // Create checkout session

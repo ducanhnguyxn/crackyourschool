@@ -29,7 +29,7 @@ serve(async (req) => {
 
         if (userId) {
           // Update user profile to Pro
-          await fetch(`${supabaseUrl}/rest/v1/user_profiles?id=eq.${userId}`, {
+          const updateRes = await fetch(`${supabaseUrl}/rest/v1/user_profiles?id=eq.${userId}`, {
             method: 'PATCH',
             headers: {
               'apikey': supabaseKey,
@@ -43,6 +43,12 @@ serve(async (req) => {
               stripe_subscription_id: session.subscription,
             }),
           });
+
+          if (!updateRes.ok) {
+            // Return a non-200 so Stripe retries the webhook instead of
+            // silently losing the upgrade.
+            throw new Error(`Failed to activate Pro for user ${userId}: ${updateRes.status} ${await updateRes.text()}`);
+          }
         }
         break;
       }
@@ -53,7 +59,7 @@ serve(async (req) => {
         const customerId = subscription.customer as string;
 
         // Find user by customer ID
-        const { data: profile } = await fetch(
+        const profileRes = await fetch(
           `${supabaseUrl}/rest/v1/user_profiles?stripe_customer_id=eq.${customerId}`,
           {
             headers: {
@@ -61,11 +67,17 @@ serve(async (req) => {
               'Authorization': `Bearer ${supabaseKey}`,
             },
           }
-        ).then(res => res.json());
+        );
+
+        if (!profileRes.ok) {
+          throw new Error(`Failed to look up profile for customer ${customerId}: ${profileRes.status} ${await profileRes.text()}`);
+        }
+
+        const profile = await profileRes.json();
 
         if (profile?.[0]) {
           const isActive = subscription.status === 'active';
-          await fetch(
+          const updateRes = await fetch(
             `${supabaseUrl}/rest/v1/user_profiles?id=eq.${profile[0].id}`,
             {
               method: 'PATCH',
@@ -81,6 +93,10 @@ serve(async (req) => {
               }),
             }
           );
+
+          if (!updateRes.ok) {
+            throw new Error(`Failed to update subscription status for user ${profile[0].id}: ${updateRes.status} ${await updateRes.text()}`);
+          }
         }
         break;
       }
