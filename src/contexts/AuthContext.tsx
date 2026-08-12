@@ -41,6 +41,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (error && error.code !== 'PGRST116') {
         // PGRST116 is "not found" - profile might not exist yet
         console.error('Error fetching profile:', error);
+        // Set a default profile so the app can continue even if fetch fails
+        setProfile({
+          id: userId,
+          is_pro: false,
+          subscription_status: null,
+          pdf_count: 0,
+          questions_used_this_month: 0,
+        });
         return;
       }
 
@@ -60,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               questions_reset_date: now.toISOString()
             })
             .eq('id', userId)
-            .select('id, is_pro, subscription_status, pdf_count, questions_used_this_month')
+            .select('id, is_pro, subscription_status, pdf_count, questions_used_this_month, questions_reset_date')
             .single();
           
           if (updatedProfile) {
@@ -72,15 +80,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setProfile(data);
       } else {
         // Create default profile if it doesn't exist
-        const { data: newProfile } = await supabase
+        const { data: newProfile, error: insertError } = await supabase
           .from('user_profiles')
           .insert({ id: userId, email: userEmail })
-          .select('id, is_pro, subscription_status, pdf_count, questions_used_this_month')
+          .select('id, is_pro, subscription_status, pdf_count, questions_used_this_month, questions_reset_date')
           .single();
-        if (newProfile) setProfile(newProfile);
+        
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+          // Even if profile creation fails, set a default profile object so the app can continue
+          setProfile({
+            id: userId,
+            is_pro: false,
+            subscription_status: null,
+            pdf_count: 0,
+            questions_used_this_month: 0,
+          });
+        } else if (newProfile) {
+          setProfile(newProfile);
+        }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
+      // Always set a default profile on error so the app can continue
+      setProfile({
+        id: userId,
+        is_pro: false,
+        subscription_status: null,
+        pdf_count: 0,
+        questions_used_this_month: 0,
+      });
     }
   };
 
@@ -91,14 +120,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    let mounted = true;
+    
+    // Set a timeout to prevent infinite loading (max 5 seconds)
+    const timeoutId = setTimeout(() => {
+      if (mounted) {
+        console.warn('Auth initialization timeout - setting loading to false');
+        setLoading(false);
+      }
+    }, 5000);
+
     // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!mounted) return;
+      
+      clearTimeout(timeoutId);
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
         await fetchProfile(session.user.id, session.user.email);
+      } else {
+        // Ensure profile is null when no user
+        setProfile(null);
       }
       setLoading(false);
+    }).catch((error) => {
+      if (!mounted) return;
+      
+      clearTimeout(timeoutId);
+      console.error('Error getting session:', error);
+      setLoading(false); // Always set loading to false, even on error
     });
 
     // Listen for auth changes
@@ -115,7 +166,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {

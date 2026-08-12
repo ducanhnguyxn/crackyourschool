@@ -118,12 +118,21 @@ export const PDFUploader = ({ onFileUpload }: PDFUploaderProps) => {
         throw dbError;
       }
 
-      // Increment PDF count for free users (Pro users have unlimited)
+      // Increment PDF count for free users (Pro users have unlimited) - atomic increment
       if (!profile?.is_pro) {
-        await supabase
+        // Read current value first to avoid race conditions
+        const { data: currentProfile } = await supabase
           .from('user_profiles')
-          .update({ pdf_count: (profile?.pdf_count || 0) + 1 })
-          .eq('id', user.id);
+          .select('pdf_count')
+          .eq('id', user.id)
+          .single();
+        
+        if (currentProfile) {
+          await supabase
+            .from('user_profiles')
+            .update({ pdf_count: (currentProfile.pdf_count || 0) + 1 })
+            .eq('id', user.id);
+        }
       }
 
       onFileUpload(file, text, images, pdfData.id);

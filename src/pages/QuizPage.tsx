@@ -70,7 +70,19 @@ const QuizPage = () => {
   };
 
   const handleSubmitQuiz = async () => {
-    if (!user || !currentQuizId) {
+    if (!user) {
+      // User not logged in - still show results
+      setShowResults(true);
+      return;
+    }
+    
+    if (!currentQuizId) {
+      // Quiz wasn't saved to database - show error but still allow viewing results
+      toast({
+        title: "Warning",
+        description: "Quiz results couldn't be saved, but you can still view them below.",
+        variant: "destructive",
+      });
       setShowResults(true);
       return;
     }

@@ -49,6 +49,12 @@ serve(async (req) => {
       systemPrompt += `\n\nAnalyze this PDF (including any images) and suggest 4-6 useful action buttons the user might want (e.g., "Extract Dates", "Find Definitions", "List Key Topics", "Identify Main Arguments", "Extract Statistics", "Describe Images"). Return ONLY a JSON array of action objects with "label" and "prompt" fields, nothing else.`;
     }
 
+    // Use vision model if images are present, otherwise use regular model
+    const hasImages = pdfImages && pdfImages.length > 0;
+    const model = hasImages 
+      ? (Deno.env.get('OPENAI_VISION_MODEL') || 'gpt-4o')
+      : (Deno.env.get('OPENAI_MODEL') || 'gpt-4o-mini');
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -56,7 +62,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: Deno.env.get('OPENAI_MODEL') || 'gpt-4o-mini',
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
           ...contentMessages,
@@ -64,23 +70,46 @@ serve(async (req) => {
         ],
         stream: true,
         temperature: 0.7,
+        ...(hasImages && { max_tokens: 4096 }), // Increase tokens for vision requests
       }),
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
+      
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
           status: 429,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+      if (response.status === 401) {
+        return new Response(JSON.stringify({ error: 'Invalid API key. Please check your OpenAI API configuration.' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }), {
+        return new Response(JSON.stringify({ error: 'Payment required. Please add credits to your OpenAI account.' }), {
           status: 402,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      throw new Error('AI gateway error');
+      
+      // Try to parse error message from OpenAI
+      let errorMessage = 'AI service error';
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.error?.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      
+      return new Response(JSON.stringify({ error: errorMessage }), {
+        status: response.status,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     return new Response(response.body, {

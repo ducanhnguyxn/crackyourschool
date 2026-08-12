@@ -6,6 +6,29 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Question } from "@/pages/QuizPage";
 
+const extractTextFromPDF = async (file: File): Promise<string> => {
+  try {
+    const pdfjsLib = await import('pdfjs-dist');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+    
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    
+    let fullText = '';
+    for (let i = 1; i <= Math.min(pdf.numPages, 20); i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item: any) => item.str).join(' ');
+      fullText += pageText + '\n';
+    }
+    
+    return fullText;
+  } catch (error) {
+    console.error('Error extracting PDF content:', error);
+    throw error;
+  }
+};
+
 interface QuizUploaderProps {
   onQuestionsGenerated: (questions: Question[]) => void;
   setIsGenerating: (generating: boolean) => void;
@@ -57,80 +80,74 @@ export const QuizUploader = ({ onQuestionsGenerated, setIsGenerating }: QuizUplo
 
     setIsGenerating(true);
     try {
-      // Read file as base64
-      const reader = new FileReader();
-      reader.onload = async () => {
-        try {
-          const base64 = reader.result as string;
-          
-          // Parse document content
-          toast({
-            title: "Processing document",
-            description: "Extracting content from your document...",
-          });
+      toast({
+        title: "Processing document",
+        description: "Extracting content from your document...",
+      });
 
-          // For simplicity, we'll extract text from the file
-          // In production, you might want to use a proper document parsing library
-          let content = "";
-          if (selectedFile.type === 'application/pdf') {
-            // For PDF, we'll send the base64 content and let the backend handle parsing
-            content = base64;
-          } else {
-            // For Word docs, similar approach
-            content = base64;
-          }
+      // Extract text content from the file
+      let content = '';
+      if (selectedFile.type === 'application/pdf') {
+        content = await extractTextFromPDF(selectedFile);
+      } else {
+        // For Word docs, try to read as text
+        content = await selectedFile.text();
+      }
 
-          // Call edge function to generate quiz
-          const { data, error } = await supabase.functions.invoke('generate-quiz', {
-            body: { content: `Please analyze this document and create a quiz. Document: ${selectedFile.name}` }
-          });
+      if (!content.trim()) {
+        throw new Error("Could not extract text from the document. Please ensure the document contains readable text.");
+      }
 
-          if (error) {
-            console.error("Error generating quiz:", error);
-            toast({
-              title: "Error",
-              description: error.message || "Failed to generate quiz",
-              variant: "destructive",
-            });
-            setIsGenerating(false);
-            return;
-          }
+      // Call edge function to generate quiz
+      const { data, error } = await supabase.functions.invoke('generate-quiz', {
+        body: { content }
+      });
 
-          if (data?.questions && data.questions.length > 0) {
-            // Shuffle questions
-            const shuffled = [...data.questions].sort(() => Math.random() - 0.5);
-            onQuestionsGenerated(shuffled);
-            toast({
-              title: "Quiz generated!",
-              description: `Created ${shuffled.length} questions from your document`,
-            });
-          } else {
-            toast({
-              title: "Error",
-              description: "No questions were generated",
-              variant: "destructive",
-            });
-          }
-        } catch (err) {
-          console.error("Error:", err);
-          toast({
-            title: "Error",
-            description: "Failed to process document",
-            variant: "destructive",
-          });
-        } finally {
-          setIsGenerating(false);
-        }
-      };
-      
-      reader.readAsDataURL(selectedFile);
+      if (error) {
+        console.error("Error generating quiz:", error);
+        const errorMessage = error.message || (typeof error === 'string' ? error : "Failed to generate quiz");
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        setIsGenerating(false);
+        return;
+      }
+
+      if (data?.error) {
+        toast({
+          title: "Error",
+          description: data.error,
+          variant: "destructive",
+        });
+        setIsGenerating(false);
+        return;
+      }
+
+      if (data?.questions && data.questions.length > 0) {
+        // Shuffle questions
+        const shuffled = [...data.questions].sort(() => Math.random() - 0.5);
+        onQuestionsGenerated(shuffled);
+        toast({
+          title: "Quiz generated!",
+          description: `Created ${shuffled.length} questions from your document`,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "No questions were generated. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error generating quiz:", error);
       toast({
         title: "Error",
-        description: "Failed to generate quiz",
+        description: error instanceof Error ? error.message : "Failed to generate quiz",
         variant: "destructive",
       });
+    } finally {
       setIsGenerating(false);
     }
   };

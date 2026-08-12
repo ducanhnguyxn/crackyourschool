@@ -119,16 +119,16 @@ const SchedulePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <main className="container mx-auto px-4 pt-24 pb-16">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Study Schedule</h1>
-          <p className="text-muted-foreground">Plan and organize your study sessions</p>
+      <main className="container mx-auto px-4 pt-20 md:pt-24 pb-8 md:pb-16">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">Study Schedule</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Plan and organize your study sessions</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Calendar */}
-          <Card className="p-6 lg:col-span-1">
-            <h2 className="text-xl font-bold mb-4">Calendar</h2>
+          <Card className="p-4 md:p-6 lg:col-span-1">
+            <h2 className="text-lg md:text-xl font-bold mb-4">Calendar</h2>
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -148,13 +148,13 @@ const SchedulePage = () => {
           </Card>
 
           {/* Sessions for selected date */}
-          <Card className="p-6 lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
+          <Card className="p-4 md:p-6 lg:col-span-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 md:mb-6">
               <div>
-                <h2 className="text-xl font-bold">
+                <h2 className="text-lg md:text-xl font-bold">
                   {selectedDate ? format(selectedDate, "EEEE, MMMM d") : "Select a date"}
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   {selectedDateSessions.length} session(s) scheduled
                 </p>
               </div>
@@ -250,7 +250,7 @@ const SchedulePage = () => {
                 <p className="text-sm">Click "Add Session" to get started</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {selectedDateSessions
                   .sort((a, b) => a.time.localeCompare(b.time))
                   .map((session) => {
@@ -259,27 +259,30 @@ const SchedulePage = () => {
                     return (
                       <div
                         key={session.id}
-                        className="flex items-center gap-4 p-4 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                        className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 p-3 md:p-4 rounded-lg border border-border hover:border-primary/50 transition-colors"
                       >
-                        <div className={`p-3 rounded-full ${config.color}/10`}>
-                          <Icon className={`w-5 h-5 ${config.color.replace("bg-", "text-")}`} />
+                        <div className={`p-2 md:p-3 rounded-full ${config.color}/10 shrink-0`}>
+                          <Icon className={`w-4 h-4 md:w-5 md:h-5 ${config.color.replace("bg-", "text-")}`} />
                         </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold">{session.title}</h3>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-sm md:text-base break-words">{session.title}</h3>
+                          <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground">
                             <span>{session.time}</span>
                             <span>•</span>
                             <span>{session.duration}</span>
                           </div>
                         </div>
-                        <Badge variant="secondary">{config.label}</Badge>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteSession(session.id)}
-                        >
-                          <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
-                        </Button>
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                          <Badge variant="secondary" className="text-xs">{config.label}</Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteSession(session.id)}
+                            className="shrink-0"
+                          >
+                            <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
+                          </Button>
+                        </div>
                       </div>
                     );
                   })}

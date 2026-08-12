@@ -102,7 +102,7 @@ You must respond using the generate_quiz function with the exact structure speci
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("OpenAI API error:", response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -111,16 +111,32 @@ You must respond using the generate_quiz function with the exact structure speci
         );
       }
       
+      if (response.status === 401) {
+        return new Response(
+          JSON.stringify({ error: "Invalid API key. Please check your OpenAI API configuration." }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Payment required. Please add credits to your workspace." }),
+          JSON.stringify({ error: "Payment required. Please add credits to your OpenAI account." }),
           { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
+      // Try to parse error message from OpenAI
+      let errorMessage = "Failed to generate quiz";
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.error?.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+
       return new Response(
-        JSON.stringify({ error: "Failed to generate quiz" }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: errorMessage }),
+        { status: response.status || 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 

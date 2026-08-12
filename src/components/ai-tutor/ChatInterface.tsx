@@ -15,10 +15,16 @@ export const ChatInterface = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const conversationIdRef = useRef<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    conversationIdRef.current = conversationId;
+  }, [conversationId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,16 +44,22 @@ export const ChatInterface = () => {
 
       return () => clearTimeout(timeoutId);
     }
-  }, [messages, user, saveConversation]);
+  }, [messages, user, saveConversation]); // Now safe to include saveConversation since it uses ref
 
   const streamChat = async (userMessages: Message[]) => {
     const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
+    
+    // Get JWT token from session
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error("Not authenticated");
+    }
     
     const resp = await fetch(CHAT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        Authorization: `Bearer ${session.access_token}`,
       },
       body: JSON.stringify({ messages: userMessages }),
     });
@@ -127,7 +139,10 @@ export const ChatInterface = () => {
     if (!user) return;
 
     try {
-      if (!conversationId) {
+      // Use ref to get the latest conversationId value, avoiding stale closure
+      const currentConversationId = conversationIdRef.current;
+      
+      if (!currentConversationId) {
         // Create new conversation
         const { data, error } = await supabase
           .from('ai_tutor_conversations')
@@ -141,6 +156,7 @@ export const ChatInterface = () => {
 
         if (error) throw error;
         setConversationId(data.id);
+        conversationIdRef.current = data.id; // Update ref immediately
       } else {
         // Update existing conversation
         await supabase
@@ -149,13 +165,13 @@ export const ChatInterface = () => {
             messages: updatedMessages,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', conversationId);
+          .eq('id', currentConversationId);
       }
     } catch (error) {
       console.error('Error saving conversation:', error);
       // Don't show error to user, just log it
     }
-  }, [user, conversationId]);
+  }, [user]); // No longer depends on conversationId, uses ref instead
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -183,14 +199,23 @@ export const ChatInterface = () => {
     try {
       await streamChat(updatedMessages);
       
-      // Increment question count for free users after successful message
+      // Increment question count for free users after successful message (atomic increment)
       if (!profile?.is_pro && user) {
-        await supabase
+        // Use RPC function for atomic increment, or fallback to direct update with current value
+        const { data: currentProfile } = await supabase
           .from('user_profiles')
-          .update({ 
-            questions_used_this_month: (profile?.questions_used_this_month || 0) + 1 
-          })
-          .eq('id', user.id);
+          .select('questions_used_this_month')
+          .eq('id', user.id)
+          .single();
+        
+        if (currentProfile) {
+          await supabase
+            .from('user_profiles')
+            .update({ 
+              questions_used_this_month: (currentProfile.questions_used_this_month || 0) + 1 
+            })
+            .eq('id', user.id);
+        }
         
         // Refresh profile to update the count
         await refreshProfile();

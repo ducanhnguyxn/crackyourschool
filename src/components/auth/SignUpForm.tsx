@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,8 +12,18 @@ export const SignUpForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const justSignedUp = useRef(false);
+
+  // Navigate to dashboard if user becomes authenticated after sign-up
+  useEffect(() => {
+    if (justSignedUp.current && user) {
+      justSignedUp.current = false;
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,23 +47,35 @@ export const SignUpForm = () => {
     }
 
     setIsLoading(true);
+    justSignedUp.current = true;
 
     const { error } = await signUp(email, password);
 
     if (error) {
+      justSignedUp.current = false;
       toast({
         title: 'Error signing up',
         description: error.message,
         variant: 'destructive',
       });
+      setIsLoading(false);
     } else {
-      toast({
-        title: 'Check your email',
-        description: 'We sent you a confirmation email. Please check your inbox.',
-      });
+      // Wait a moment for auth state to update, then check if user is authenticated
+      setTimeout(() => {
+        if (user) {
+          // User is immediately authenticated (email confirmation disabled)
+          navigate('/dashboard');
+        } else {
+          // Email confirmation required
+          toast({
+            title: 'Check your email',
+            description: 'We sent you a confirmation email. Please check your inbox.',
+          });
+        }
+        justSignedUp.current = false;
+        setIsLoading(false);
+      }, 500);
     }
-
-    setIsLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
