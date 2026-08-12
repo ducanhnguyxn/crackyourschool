@@ -170,6 +170,7 @@ export const FlashcardUploader = ({ onFlashcardsGenerated, setIsGenerating }: Fl
                   variant="ghost"
                   size="icon"
                   onClick={() => setSelectedFile(null)}
+                  aria-label="Remove selected file"
                 >
                   <X className="w-4 h-4" />
                 </Button>

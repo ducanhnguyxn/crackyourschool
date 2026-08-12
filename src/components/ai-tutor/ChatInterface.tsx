@@ -169,9 +169,13 @@ export const ChatInterface = () => {
       }
     } catch (error) {
       console.error('Error saving conversation:', error);
-      // Don't show error to user, just log it
+      toast({
+        title: "Couldn't save conversation",
+        description: "Your chat history may not persist. Your current messages are still visible.",
+        variant: "destructive",
+      });
     }
-  }, [user]); // No longer depends on conversationId, uses ref instead
+  }, [user, toast]); // No longer depends on conversationId, uses ref instead
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -278,6 +282,7 @@ export const ChatInterface = () => {
             disabled={!input.trim() || isLoading}
             size="icon"
             className="h-[60px] w-[60px]"
+            aria-label="Send message"
           >
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin" />

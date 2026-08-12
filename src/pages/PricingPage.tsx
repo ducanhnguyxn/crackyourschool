@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +17,19 @@ const PricingPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    const limitMessage = sessionStorage.getItem("limitMessage");
+    if (limitMessage) {
+      sessionStorage.removeItem("limitMessage");
+      toast({
+        title: "Free limit reached",
+        description: limitMessage,
+      });
+    }
+    // Only meant to run once on mount to consume the one-shot redirect message.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const features = {
     free: [

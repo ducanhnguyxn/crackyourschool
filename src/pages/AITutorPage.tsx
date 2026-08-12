@@ -11,7 +11,7 @@ const AITutorPage = () => {
       <main className="flex-1 pt-20 pb-4">
         <div className="container mx-auto px-4 mb-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild>
+            <Button variant="ghost" size="icon" asChild aria-label="Back to dashboard">
               <Link to="/dashboard">
                 <ArrowLeft className="h-5 w-5" />
               </Link>
