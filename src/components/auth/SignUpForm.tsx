@@ -60,19 +60,17 @@ export const SignUpForm = () => {
       });
       setIsLoading(false);
     } else {
-      // Wait a moment for auth state to update, then check if user is authenticated
+      // Wait a moment for the effect above to react to the auth state update.
+      // If justSignedUp is still true, the user never became authenticated,
+      // meaning email confirmation is required.
       setTimeout(() => {
-        if (user) {
-          // User is immediately authenticated (email confirmation disabled)
-          navigate('/dashboard');
-        } else {
-          // Email confirmation required
+        if (justSignedUp.current) {
+          justSignedUp.current = false;
           toast({
             title: 'Check your email',
             description: 'We sent you a confirmation email. Please check your inbox.',
           });
         }
-        justSignedUp.current = false;
         setIsLoading(false);
       }, 500);
     }

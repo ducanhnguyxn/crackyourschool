@@ -29,6 +29,10 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
     if (pdfContent && !summary) {
       generateSummary();
     }
+    // Intentionally excludes generateSummary/summary: this should fire once
+    // when pdfContent arrives, guarded by summary so it doesn't repeat while
+    // generateSummary's own state updates (isGeneratingSummary) re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pdfContent]);
 
   const generateSummary = async () => {

@@ -30,7 +30,7 @@ export const FlashcardUploader = ({ onFlashcardsGenerated, setIsGenerating }: Fl
       for (let i = 1; i <= Math.min(pdf.numPages, 20); i++) {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
-        const pageText = textContent.items.map((item: any) => item.str).join(' ');
+        const pageText = textContent.items.map((item) => ('str' in item ? item.str : '')).join(' ');
         fullText += pageText + '\n';
       }
       

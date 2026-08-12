@@ -20,8 +20,13 @@ serve(async (req) => {
     }
 
     let systemPrompt = `You are an AI assistant helping users understand and analyze PDF documents. `;
-    
-    const contentMessages: any[] = [];
+
+    type ChatMessage = {
+      role: string;
+      content: string | Array<{ type: string; text?: string; image_url?: { url: string } }>;
+    };
+
+    const contentMessages: ChatMessage[] = [];
     
     if (pdfContent) {
       systemPrompt += `Here is the extracted text from the PDF:\n\n${pdfContent.substring(0, 10000)}\n\n`;

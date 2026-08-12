@@ -16,7 +16,7 @@ const AuthPage = () => {
         <div className="flex flex-col items-center space-y-2">
           <div className="flex items-center gap-2">
             <BookOpen className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-bold">crackyourschool</span>
+            <span className="text-2xl font-bold">CrackYourSchool</span>
           </div>
           <p className="text-muted-foreground text-center">
             Your AI-powered study companion
