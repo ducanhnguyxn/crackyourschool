@@ -1,16 +1,16 @@
-project_id = "ejakrzhkyfzxeuqcyxrp"
+project_id = "aorubfgiyhryezilismd"
 
 [functions.ai-tutor]
 verify_jwt = true
 
 [functions.generate-quiz]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-flashcards]
-verify_jwt = false
+verify_jwt = true
 
 [functions.pdf-chat]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-checkout-session]
 verify_jwt = true
