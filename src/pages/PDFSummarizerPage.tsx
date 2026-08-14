@@ -6,8 +6,11 @@ import { Navigation } from "@/components/Navigation";
 import { PDFUploader } from "@/components/pdf-summarizer/PDFUploader";
 import { PDFViewer } from "@/components/pdf-summarizer/PDFViewer";
 import { AIChatPanel } from "@/components/pdf-summarizer/AIChatPanel";
+import { UsageIndicator } from "@/components/UsageIndicator";
+import { useAuth } from "@/contexts/AuthContext";
 
 const PDFSummarizerPage = () => {
+  const { profile } = useAuth();
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfText, setPdfText] = useState<string>("");
   const [pdfImages, setPdfImages] = useState<string[]>([]);
@@ -29,6 +32,7 @@ const PDFSummarizerPage = () => {
               <h1 className="text-3xl md:text-4xl font-bold mb-2">PDF Summarizer</h1>
               <p className="text-muted-foreground">Upload a PDF to get AI-powered summaries and insights</p>
             </div>
+            <UsageIndicator used={profile?.pdf_count || 0} limit={2} label="PDFs" />
             <PDFUploader onFileUpload={handleFileUpload} />
           </div>
         ) : (
