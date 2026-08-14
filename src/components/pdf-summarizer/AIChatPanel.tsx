@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Message {
   role: "user" | "assistant";
@@ -25,6 +25,7 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { session } = useAuth();
 
   useEffect(() => {
     if (pdfContent && !summary) {
@@ -39,7 +40,6 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
   const generateSummary = async () => {
     setIsGeneratingSummary(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error("Not authenticated");
       }
@@ -135,7 +135,6 @@ export const AIChatPanel = ({ pdfContent, pdfImages }: AIChatPanelProps) => {
     setIsLoading(true);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error("Not authenticated");
       }

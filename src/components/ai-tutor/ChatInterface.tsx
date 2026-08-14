@@ -18,7 +18,7 @@ export const ChatInterface = () => {
   const conversationIdRef = useRef<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, session } = useAuth();
   const navigate = useNavigate();
 
   // Keep ref in sync with state
@@ -34,6 +34,48 @@ export const ChatInterface = () => {
     scrollToBottom();
   }, [messages]);
 
+  const saveConversation = useCallback(async (updatedMessages: Message[]) => {
+    if (!user) return;
+
+    try {
+      // Use ref to get the latest conversationId value, avoiding stale closure
+      const currentConversationId = conversationIdRef.current;
+
+      if (!currentConversationId) {
+        // Create new conversation
+        const { data, error } = await supabase
+          .from('ai_tutor_conversations')
+          .insert({
+            user_id: user.id,
+            title: updatedMessages[0]?.content?.substring(0, 50) || 'New Conversation',
+            messages: updatedMessages,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        setConversationId(data.id);
+        conversationIdRef.current = data.id; // Update ref immediately
+      } else {
+        // Update existing conversation
+        await supabase
+          .from('ai_tutor_conversations')
+          .update({
+            messages: updatedMessages,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', currentConversationId);
+      }
+    } catch (error) {
+      console.error('Error saving conversation:', error);
+      toast({
+        title: "Couldn't save conversation",
+        description: "Your chat history may not persist. Your current messages are still visible.",
+        variant: "destructive",
+      });
+    }
+  }, [user, toast]); // No longer depends on conversationId, uses ref instead
+
   // Save conversation when messages change (debounced)
   useEffect(() => {
     if (messages.length > 0 && messages.length % 2 === 0 && user) {
@@ -48,13 +90,16 @@ export const ChatInterface = () => {
 
   const streamChat = async (userMessages: Message[]) => {
     const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
-    
-    // Get JWT token from session
-    const { data: { session } } = await supabase.auth.getSession();
+
+    // Use the session already resolved by AuthContext instead of calling
+    // supabase.auth.getSession() fresh here - that call can hang indefinitely
+    // in some browser contexts (the same issue AuthContext itself works
+    // around with its own startup timeout), which would leave the chat
+    // stuck in a loading state forever with no error shown.
     if (!session) {
       throw new Error("Not authenticated");
     }
-    
+
     const resp = await fetch(CHAT_URL, {
       method: "POST",
       headers: {
@@ -134,48 +179,6 @@ export const ChatInterface = () => {
       }
     }
   };
-
-  const saveConversation = useCallback(async (updatedMessages: Message[]) => {
-    if (!user) return;
-
-    try {
-      // Use ref to get the latest conversationId value, avoiding stale closure
-      const currentConversationId = conversationIdRef.current;
-      
-      if (!currentConversationId) {
-        // Create new conversation
-        const { data, error } = await supabase
-          .from('ai_tutor_conversations')
-          .insert({
-            user_id: user.id,
-            title: updatedMessages[0]?.content?.substring(0, 50) || 'New Conversation',
-            messages: updatedMessages,
-          })
-          .select()
-          .single();
-
-        if (error) throw error;
-        setConversationId(data.id);
-        conversationIdRef.current = data.id; // Update ref immediately
-      } else {
-        // Update existing conversation
-        await supabase
-          .from('ai_tutor_conversations')
-          .update({
-            messages: updatedMessages,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', currentConversationId);
-      }
-    } catch (error) {
-      console.error('Error saving conversation:', error);
-      toast({
-        title: "Couldn't save conversation",
-        description: "Your chat history may not persist. Your current messages are still visible.",
-        variant: "destructive",
-      });
-    }
-  }, [user, toast]); // No longer depends on conversationId, uses ref instead
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
