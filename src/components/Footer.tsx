@@ -1,4 +1,5 @@
 import { BookOpen, Twitter, Facebook, Instagram, Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -34,7 +35,7 @@ export const Footer = () => {
             <ul className="space-y-3">
               <li><a href="#" className="text-background/70 hover:text-primary transition-colors">Features</a></li>
               <li><a href="#" className="text-background/70 hover:text-primary transition-colors">Pricing</a></li>
-              <li><a href="#" className="text-background/70 hover:text-primary transition-colors">FAQ</a></li>
+              <li><Link to="/faq" className="text-background/70 hover:text-primary transition-colors">FAQ</Link></li>
               <li><a href="#" className="text-background/70 hover:text-primary transition-colors">Roadmap</a></li>
             </ul>
           </div>

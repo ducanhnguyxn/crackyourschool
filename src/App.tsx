@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
 import PricingPage from "./pages/PricingPage";
+import FAQPage from "./pages/FAQPage";
 import DashboardPage from "./pages/DashboardPage";
 import AITutorPage from "./pages/AITutorPage";
 import MindMapPage from "./pages/MindMapPage";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/faq" element={<FAQPage />} />
               <Route
                 path="/dashboard"
                 element={

@@ -52,9 +52,9 @@ export const Navigation = () => {
             <a href="/#blog" className="text-sm font-medium hover:text-primary transition-colors">
               Blog
             </a>
-            <a href="/#faq" className="text-sm font-medium hover:text-primary transition-colors">
+            <Link to="/faq" className="text-sm font-medium hover:text-primary transition-colors">
               FAQ
-            </a>
+            </Link>
           </div>
 
           {user ? (
