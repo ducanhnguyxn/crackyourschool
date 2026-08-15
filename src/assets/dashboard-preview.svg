@@ -1,0 +1,235 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1300" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EEF2FF"/>
+      <stop offset="45%" stop-color="#FAFAFA"/>
+      <stop offset="100%" stop-color="#FFF8E1"/>
+    </linearGradient>
+    <linearGradient id="streakBg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FCC318" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="challengeBg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FCC318" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.1"/>
+    </linearGradient>
+    <filter id="windowShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="25" stdDeviation="35" flood-color="#111827" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1300" fill="url(#bg)"/>
+
+  <g filter="url(#windowShadow)">
+    <rect x="70" y="40" width="1780" height="1220" rx="20" fill="#FFFFFF" stroke="#E5E7EB"/>
+  </g>
+
+  <!-- Browser chrome -->
+  <rect x="70" y="40" width="1780" height="52" rx="20" fill="#F9FAFB"/>
+  <rect x="70" y="72" width="1780" height="20" fill="#F9FAFB"/>
+  <line x1="70" y1="92" x2="1850" y2="92" stroke="#E5E7EB"/>
+  <circle cx="102" cy="66" r="6" fill="#FF5F57"/>
+  <circle cx="126" cy="66" r="6" fill="#FEBC2E"/>
+  <circle cx="150" cy="66" r="6" fill="#28C840"/>
+  <rect x="190" y="52" width="420" height="28" rx="8" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="206" y="70" font-size="13" fill="#6B7280">crackyourschool.com/dashboard</text>
+
+  <!-- Navbar -->
+  <line x1="70" y1="156" x2="1850" y2="156" stroke="#E5E7EB"/>
+  <g transform="translate(102, 108)">
+    <path d="M0 3h20a12 12 0 0 1 12 12v40a9 9 0 0 0-9-9H0z" fill="none" stroke="#FCC318" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M66 3H46a12 12 0 0 0-12 12v40a9 9 0 0 1 9-9h23z" fill="none" stroke="#FCC318" stroke-width="3" stroke-linejoin="round"/>
+    <text x="82" y="36" font-size="24" font-weight="800" fill="#111827">CrackYourSchool</text>
+  </g>
+  <circle cx="1806" cy="132" r="20" fill="#FCC318"/>
+  <text x="1806" y="139" font-size="15" font-weight="700" fill="#111827" text-anchor="middle">D</text>
+
+  <!-- Page heading -->
+  <text x="102" y="216" font-size="30" font-weight="800" fill="#111827">Welcome back, Student! 👋</text>
+  <text x="102" y="248" font-size="16" fill="#6B7280">Here's your study overview for today</text>
+
+  <!-- Streak card -->
+  <rect x="102" y="272" width="1140" height="150" rx="14" fill="url(#streakBg)" stroke="#FCC318" stroke-opacity="0.3"/>
+  <text x="134" y="316" font-size="24" font-weight="800" fill="#111827">🔥 4 Day Streak!</text>
+  <text x="134" y="342" font-size="14" fill="#6B7280">Keep it up! You're doing great 🎉</text>
+  <g font-size="12" fill="#6B7280" text-anchor="middle">
+    <!-- Mon -->
+    <circle cx="168" cy="386" r="22" fill="#FCC318"/>
+    <text x="168" y="392" font-size="16" font-weight="700" fill="#111827" text-anchor="middle">✓</text>
+    <text x="168" y="424">Mon</text>
+    <!-- Tue -->
+    <circle cx="322" cy="386" r="22" fill="#FCC318"/>
+    <text x="322" y="392" font-size="16" font-weight="700" fill="#111827" text-anchor="middle">✓</text>
+    <text x="322" y="424">Tue</text>
+    <!-- Wed -->
+    <circle cx="476" cy="386" r="22" fill="#FCC318"/>
+    <text x="476" y="392" font-size="16" font-weight="700" fill="#111827" text-anchor="middle">✓</text>
+    <text x="476" y="424">Wed</text>
+    <!-- Thu -->
+    <circle cx="630" cy="386" r="22" fill="#FCC318"/>
+    <text x="630" y="392" font-size="16" font-weight="700" fill="#111827" text-anchor="middle">✓</text>
+    <text x="630" y="424">Thu</text>
+    <!-- Fri -->
+    <circle cx="784" cy="386" r="22" fill="#F3F4F6"/>
+    <text x="784" y="424">Fri</text>
+    <!-- Sat -->
+    <circle cx="938" cy="386" r="22" fill="#F3F4F6"/>
+    <text x="938" y="424">Sat</text>
+    <!-- Sun -->
+    <circle cx="1092" cy="386" r="22" fill="#F3F4F6"/>
+    <text x="1092" y="424">Sun</text>
+  </g>
+
+  <!-- Quick Actions card -->
+  <rect x="102" y="446" width="1140" height="260" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="134" y="490" font-size="19" font-weight="700" fill="#111827">Quick Actions</text>
+
+  <!-- row 1 -->
+  <g>
+    <rect x="134" y="512" width="352" height="94" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="180" cy="546" r="20" fill="#A855F7" fill-opacity="0.14"/>
+    <text x="180" y="553" font-size="18" text-anchor="middle">🧠</text>
+    <text x="210" y="551" font-size="14" font-weight="700" fill="#111827">AI Quiz</text>
+    <text x="210" y="570" font-size="12" fill="#6B7280">Generate practice questions</text>
+
+    <rect x="510" y="512" width="352" height="94" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="556" cy="546" r="20" fill="#FCC318" fill-opacity="0.16"/>
+    <text x="556" y="553" font-size="18" text-anchor="middle">📄</text>
+    <text x="586" y="551" font-size="14" font-weight="700" fill="#111827">PDF Summarizer</text>
+    <text x="586" y="570" font-size="12" fill="#6B7280">Analyze your documents</text>
+
+    <rect x="886" y="512" width="352" height="94" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="932" cy="546" r="20" fill="#EC4899" fill-opacity="0.14"/>
+    <text x="932" y="553" font-size="18" text-anchor="middle">✨</text>
+    <text x="962" y="551" font-size="14" font-weight="700" fill="#111827">AI Tutor</text>
+    <text x="962" y="570" font-size="12" fill="#6B7280">Get instant help</text>
+  </g>
+
+  <!-- row 2 -->
+  <g>
+    <rect x="134" y="618" width="352" height="70" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="180" cy="653" r="20" fill="#3B82F6" fill-opacity="0.14"/>
+    <text x="180" y="660" font-size="18" text-anchor="middle">📚</text>
+    <text x="210" y="649" font-size="14" font-weight="700" fill="#111827">Flashcards</text>
+    <text x="210" y="668" font-size="12" fill="#6B7280">Create new deck</text>
+
+    <rect x="510" y="618" width="352" height="70" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="556" cy="653" r="20" fill="#22C55E" fill-opacity="0.14"/>
+    <text x="556" y="660" font-size="18" text-anchor="middle">💡</text>
+    <text x="586" y="649" font-size="14" font-weight="700" fill="#111827">Mind Map</text>
+    <text x="586" y="668" font-size="12" fill="#6B7280">Visualize concepts</text>
+
+    <rect x="886" y="618" width="352" height="70" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="932" cy="653" r="20" fill="#F97316" fill-opacity="0.14"/>
+    <text x="932" y="660" font-size="18" text-anchor="middle">📅</text>
+    <text x="962" y="649" font-size="14" font-weight="700" fill="#111827">Schedule</text>
+    <text x="962" y="668" font-size="12" fill="#6B7280">Plan your study time</text>
+  </g>
+
+  <!-- Recent Activity card -->
+  <rect x="102" y="726" width="1140" height="440" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="134" y="770" font-size="19" font-weight="700" fill="#111827">Recent Activity</text>
+
+  <g>
+    <rect x="134" y="792" width="1076" height="94" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="178" cy="839" r="18" fill="#FCC318" fill-opacity="0.16"/>
+    <text x="178" y="845" font-size="15" text-anchor="middle">🧠</text>
+    <text x="212" y="828" font-size="14" font-weight="700" fill="#111827">Completed Biology Quiz</text>
+    <rect x="418" y="812" width="46" height="20" rx="10" fill="#FCC318"/>
+    <text x="441" y="826" font-size="10" font-weight="700" fill="#111827" text-anchor="middle">Quiz</text>
+    <text x="212" y="850" font-size="13" fill="#6B7280">Scored 85% on Cell Structure</text>
+    <text x="212" y="870" font-size="11.5" fill="#9CA3AF">2 hours ago</text>
+  </g>
+
+  <g>
+    <rect x="134" y="898" width="1076" height="94" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="178" cy="945" r="18" fill="#FCC318" fill-opacity="0.16"/>
+    <text x="178" y="951" font-size="15" text-anchor="middle">📄</text>
+    <text x="212" y="934" font-size="14" font-weight="700" fill="#111827">Studied Chapter 5</text>
+    <rect x="368" y="918" width="58" height="20" rx="10" fill="#F3F4F6"/>
+    <text x="397" y="932" font-size="10" font-weight="700" fill="#111827" text-anchor="middle">Study</text>
+    <text x="212" y="956" font-size="13" fill="#6B7280">Physics — Thermodynamics</text>
+    <text x="212" y="976" font-size="11.5" fill="#9CA3AF">5 hours ago</text>
+  </g>
+
+  <g>
+    <rect x="134" y="1004" width="1076" height="94" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <circle cx="178" cy="1051" r="18" fill="#FCC318" fill-opacity="0.16"/>
+    <text x="178" y="1057" font-size="15" text-anchor="middle">📚</text>
+    <text x="212" y="1040" font-size="14" font-weight="700" fill="#111827">Reviewed Flashcards</text>
+    <rect x="392" y="1024" width="64" height="20" rx="10" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <text x="424" y="1038" font-size="10" font-weight="700" fill="#111827" text-anchor="middle">Review</text>
+    <text x="212" y="1062" font-size="13" fill="#6B7280">Spanish Vocabulary — 50 cards</text>
+    <text x="212" y="1082" font-size="11.5" fill="#9CA3AF">Yesterday</text>
+  </g>
+
+  <!-- RIGHT COLUMN -->
+  <!-- Your Stats card -->
+  <rect x="1266" y="318" width="484" height="420" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="1298" y="362" font-size="19" font-weight="700" fill="#111827">📈 Your Stats</text>
+
+  <!-- Study Time Today -->
+  <circle cx="1320" cy="404" r="17" fill="#FCC318" fill-opacity="0.14"/>
+  <text x="1320" y="410" font-size="14" text-anchor="middle">⏱️</text>
+  <text x="1350" y="401" font-size="14" font-weight="600" fill="#111827">Study Time Today</text>
+  <text x="1350" y="418" font-size="11.5" fill="#6B7280">4h goal</text>
+  <text x="1718" y="405" font-size="17" font-weight="800" fill="#111827" text-anchor="end">2h 45m</text>
+  <rect x="1298" y="428" width="420" height="8" rx="4" fill="#F3F4F6"/>
+  <rect x="1298" y="428" width="286" height="8" rx="4" fill="#FCC318"/>
+
+  <!-- Weekly Goal -->
+  <circle cx="1320" cy="476" r="17" fill="#FCC318" fill-opacity="0.14"/>
+  <text x="1320" y="482" font-size="14" text-anchor="middle">🎯</text>
+  <text x="1350" y="473" font-size="14" font-weight="600" fill="#111827">Weekly Goal</text>
+  <text x="1350" y="490" font-size="11.5" fill="#6B7280">60% complete</text>
+  <text x="1718" y="477" font-size="17" font-weight="800" fill="#111827" text-anchor="end">12/20 hours</text>
+  <rect x="1298" y="500" width="420" height="8" rx="4" fill="#F3F4F6"/>
+  <rect x="1298" y="500" width="252" height="8" rx="4" fill="#FCC318"/>
+
+  <!-- Total Points -->
+  <circle cx="1320" cy="548" r="17" fill="#FCC318" fill-opacity="0.14"/>
+  <text x="1320" y="554" font-size="14" text-anchor="middle">🏆</text>
+  <text x="1350" y="545" font-size="14" font-weight="600" fill="#111827">Total Points</text>
+  <text x="1350" y="562" font-size="11.5" fill="#6B7280">+150 this week</text>
+  <text x="1718" y="549" font-size="17" font-weight="800" fill="#111827" text-anchor="end">2,450</text>
+  <rect x="1298" y="572" width="420" height="8" rx="4" fill="#F3F4F6"/>
+  <rect x="1298" y="572" width="420" height="8" rx="4" fill="#FCC318"/>
+
+  <!-- Challenge -->
+  <rect x="1298" y="606" width="420" height="88" rx="12" fill="url(#challengeBg)" stroke="#FCC318" stroke-opacity="0.25"/>
+  <text x="1318" y="638" font-size="14" font-weight="700" fill="#111827">🎯 Daily Challenge</text>
+  <text x="1318" y="660" font-size="12" fill="#6B7280">Complete 3 quizzes today to earn</text>
+  <text x="1318" y="678" font-size="12" fill="#6B7280">a bonus 100 points!</text>
+
+  <!-- Upcoming Tasks card -->
+  <rect x="1266" y="762" width="484" height="404" rx="14" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="1298" y="806" font-size="19" font-weight="700" fill="#111827">📅 Upcoming Tasks</text>
+
+  <g>
+    <rect x="1298" y="828" width="420" height="68" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="1318" y="852" width="16" height="16" rx="4" fill="none" stroke="#E5E7EB" stroke-width="2"/>
+    <text x="1346" y="862" font-size="13.5" font-weight="600" fill="#111827">Math Assignment Due</text>
+    <text x="1550" y="862" font-size="13" fill="#EF4444">⚠</text>
+    <text x="1346" y="882" font-size="11.5" fill="#6B7280">Today, 11:59 PM</text>
+  </g>
+  <g>
+    <rect x="1298" y="906" width="420" height="68" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="1318" y="930" width="16" height="16" rx="4" fill="none" stroke="#E5E7EB" stroke-width="2"/>
+    <text x="1346" y="940" font-size="13.5" font-weight="600" fill="#111827">Review History Notes</text>
+    <text x="1346" y="960" font-size="11.5" fill="#6B7280">Tomorrow, 3:00 PM</text>
+  </g>
+  <g>
+    <rect x="1298" y="984" width="420" height="68" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="1318" y="1008" width="16" height="16" rx="4" fill="none" stroke="#E5E7EB" stroke-width="2"/>
+    <text x="1346" y="1018" font-size="13.5" font-weight="600" fill="#111827">Biology Quiz</text>
+    <text x="1470" y="1018" font-size="13" fill="#EF4444">⚠</text>
+    <text x="1346" y="1038" font-size="11.5" fill="#6B7280">Friday, 10:00 AM</text>
+  </g>
+  <g opacity="0.5">
+    <rect x="1298" y="1062" width="420" height="68" rx="12" fill="#FFFFFF" stroke="#E5E7EB"/>
+    <rect x="1318" y="1086" width="16" height="16" rx="4" fill="#FCC318" stroke="#FCC318" stroke-width="2"/>
+    <text x="1326" y="1098" font-size="11" fill="#111827" text-anchor="middle">✓</text>
+    <text x="1346" y="1096" font-size="13.5" font-weight="600" fill="#111827" text-decoration="line-through">Read Chapter 7</text>
+    <text x="1346" y="1116" font-size="11.5" fill="#6B7280">Next Week</text>
+  </g>
+</svg>
