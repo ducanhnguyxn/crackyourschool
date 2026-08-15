@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigation } from "@/components/Navigation";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,28 +45,29 @@ const typeConfig = {
   general: { icon: Clock, color: "bg-orange-500", label: "General Study" },
 };
 
+const DURATION_MINUTES: Record<string, number> = {
+  "15 min": 15,
+  "30 min": 30,
+  "45 min": 45,
+  "1 hour": 60,
+  "1.5 hours": 90,
+  "2 hours": 120,
+};
+
+const formatDuration = (minutes: number): string => {
+  if (minutes < 60) return `${minutes} min`;
+  const hours = minutes / 60;
+  return `${hours % 1 === 0 ? hours : hours.toFixed(1)} hour${hours === 1 ? "" : "s"}`;
+};
+
+const isValidType = (value: string): value is StudySession["type"] =>
+  value in typeConfig;
+
 const SchedulePage = () => {
+  const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [sessions, setSessions] = useState<StudySession[]>([
-    {
-      id: "1",
-      title: "Biology Chapter 5 Review",
-      date: new Date(),
-      time: "09:00",
-      duration: "1 hour",
-      type: "pdf",
-      color: "bg-primary",
-    },
-    {
-      id: "2",
-      title: "Math Quiz Practice",
-      date: new Date(),
-      time: "14:00",
-      duration: "45 min",
-      type: "quiz",
-      color: "bg-purple-500",
-    },
-  ]);
+  const [sessions, setSessions] = useState<StudySession[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newSession, setNewSession] = useState({
     title: "",
@@ -73,13 +76,63 @@ const SchedulePage = () => {
     type: "general" as StudySession["type"],
   });
 
+  useEffect(() => {
+    if (!user) {
+      setSessions([]);
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchSessions = async () => {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("study_sessions")
+        .select("id, title, start_time, end_time, type, color")
+        .eq("user_id", user.id)
+        .order("start_time", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching study sessions:", error);
+        toast({
+          title: "Couldn't load your schedule",
+          description: "Please try refreshing the page.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      setSessions(
+        (data || []).map((row) => {
+          const type = isValidType(row.type || "") ? (row.type as StudySession["type"]) : "general";
+          const start = new Date(row.start_time);
+          const durationMinutes = Math.round(
+            (new Date(row.end_time).getTime() - start.getTime()) / 60000
+          );
+          return {
+            id: row.id,
+            title: row.title,
+            date: start,
+            time: format(start, "HH:mm"),
+            duration: formatDuration(durationMinutes),
+            type,
+            color: row.color || typeConfig[type].color,
+          };
+        })
+      );
+      setIsLoading(false);
+    };
+
+    fetchSessions();
+  }, [user]);
+
   const selectedDateSessions = sessions.filter(
     (session) => selectedDate && isSameDay(session.date, selectedDate)
   );
 
   const datesWithSessions = sessions.map((s) => s.date);
 
-  const handleAddSession = () => {
+  const handleAddSession = async () => {
     if (!selectedDate || !newSession.title) {
       toast({
         title: "Missing information",
@@ -89,27 +142,72 @@ const SchedulePage = () => {
       return;
     }
 
-    const session: StudySession = {
-      id: Date.now().toString(),
-      title: newSession.title,
-      date: selectedDate,
-      time: newSession.time,
-      duration: newSession.duration,
-      type: newSession.type,
-      color: typeConfig[newSession.type].color,
-    };
+    if (!user) return;
 
-    setSessions([...sessions, session]);
+    const [hours, minutes] = newSession.time.split(":").map(Number);
+    const startTime = new Date(selectedDate);
+    startTime.setHours(hours, minutes, 0, 0);
+    const durationMinutes = DURATION_MINUTES[newSession.duration] ?? 60;
+    const endTime = new Date(startTime.getTime() + durationMinutes * 60000);
+    const color = typeConfig[newSession.type].color;
+
+    const { data, error } = await supabase
+      .from("study_sessions")
+      .insert({
+        user_id: user.id,
+        title: newSession.title,
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString(),
+        type: newSession.type,
+        color,
+      })
+      .select()
+      .single();
+
+    if (error || !data) {
+      console.error("Error adding study session:", error);
+      toast({
+        title: "Couldn't save session",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSessions((prev) => [
+      ...prev,
+      {
+        id: data.id,
+        title: data.title,
+        date: startTime,
+        time: newSession.time,
+        duration: newSession.duration,
+        type: newSession.type,
+        color,
+      },
+    ]);
     setNewSession({ title: "", time: "09:00", duration: "1 hour", type: "general" });
     setIsDialogOpen(false);
     toast({
       title: "Session added",
-      description: `"${session.title}" scheduled for ${format(selectedDate, "PPP")}`,
+      description: `"${newSession.title}" scheduled for ${format(selectedDate, "PPP")}`,
     });
   };
 
-  const handleDeleteSession = (id: string) => {
-    setSessions(sessions.filter((s) => s.id !== id));
+  const handleDeleteSession = async (id: string) => {
+    const { error } = await supabase.from("study_sessions").delete().eq("id", id);
+
+    if (error) {
+      console.error("Error deleting study session:", error);
+      toast({
+        title: "Couldn't delete session",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSessions((prev) => prev.filter((s) => s.id !== id));
     toast({
       title: "Session removed",
       description: "Study session has been deleted",
@@ -243,7 +341,12 @@ const SchedulePage = () => {
               </Dialog>
             </div>
 
-            {selectedDateSessions.length === 0 ? (
+            {isLoading ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
+                <p>Loading your schedule...</p>
+              </div>
+            ) : selectedDateSessions.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>No study sessions scheduled for this day</p>
