@@ -11,8 +11,14 @@ import { useToast } from "@/hooks/use-toast";
 
 const DashboardPage = () => {
   const [searchParams] = useSearchParams();
-  const { refreshProfile } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const { toast } = useToast();
+
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email?.split("@")[0] ||
+    "Student";
 
   useEffect(() => {
     const success = searchParams.get('success');
@@ -30,7 +36,7 @@ const DashboardPage = () => {
       <Navigation />
       <main className="container mx-auto px-4 pt-20 md:pt-24 pb-8 md:pb-16">
         <div className="mb-6 md:mb-8">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">Welcome back, Student! 👋</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">Welcome back, {displayName}! 👋</h1>
           <p className="text-sm md:text-base text-muted-foreground">Here's your study overview for today</p>
         </div>
 
