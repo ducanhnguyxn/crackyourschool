@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -11,28 +11,41 @@ export const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const justSignedIn = useRef(false);
+
+  // Navigate only once AuthContext's user actually updates. Navigating
+  // immediately after signIn() resolves is a race: the session exists, but
+  // user is only set asynchronously via onAuthStateChange, so ProtectedRoute
+  // can render first, see user still null, and bounce straight back to /auth.
+  useEffect(() => {
+    if (justSignedIn.current && user) {
+      justSignedIn.current = false;
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    justSignedIn.current = true;
 
     const { error } = await signIn(email, password);
 
     if (error) {
+      justSignedIn.current = false;
       toast({
         title: 'Error signing in',
         description: error.message,
         variant: 'destructive',
       });
       setIsLoading(false);
-    } else {
-      // Success - navigate to dashboard
-      // The auth state will update automatically via AuthContext
-      navigate('/dashboard');
     }
+    // On success, the effect above navigates once `user` updates.
+    // isLoading intentionally stays true until then so the button reflects
+    // the in-progress redirect instead of flashing back to "Sign In".
   };
 
   const handleGoogleSignIn = async () => {
