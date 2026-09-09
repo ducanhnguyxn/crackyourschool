@@ -26,3 +26,6 @@ dist-ssr
 # Environment variables and local Supabase CLI cache
 .env
 supabase/.temp/
+
+.claude
+
