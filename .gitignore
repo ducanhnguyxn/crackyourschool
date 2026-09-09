@@ -27,5 +27,6 @@ dist-ssr
 .env
 supabase/.temp/
 
-.claude
+.claude/
+.gitignore
 
