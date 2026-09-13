@@ -14,14 +14,14 @@ export const Hero = () => {
           </Badge>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight px-2">
-            CRACK Your STUDY. CRUSH Your EXAMS.{" "}
+            HACK Your STUDY. CRUSH Your EXAMS.{" "}
             <span className="italic">Let AI Keep You Ahead of EVERYONE.</span>
           </h1>
 
           <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
             Meet your new, completely free AI study partner, designed for academic success. 
             From an instant quiz generator and smart summaries to intelligent flashcards, 
-            CrackYourSchool provides all the tools you need to excel in your study sessions.
+            HackYourSchool provides all the tools you need to excel in your study sessions.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 pt-2 md:pt-4 px-4">
@@ -41,7 +41,7 @@ export const Hero = () => {
           <div className="pt-8 md:pt-12 px-2">
             <img 
               src={dashboardPreview} 
-              alt="CrackYourSchool Dashboard Preview showing AI study tools and features"
+              alt="HackYourSchool Dashboard Preview showing AI study tools and features"
               className="w-full rounded-xl md:rounded-2xl shadow-card-hover border border-border"
             />
           </div>

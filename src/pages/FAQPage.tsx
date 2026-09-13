@@ -14,13 +14,13 @@ const categories: FAQCategory[] = [
     title: "General",
     items: [
       {
-        question: "What is CrackYourSchool?",
+        question: "What is HackYourSchool?",
         answer:
-          "CrackYourSchool is a free AI study platform. Upload your lecture notes or PDFs and instantly generate quizzes, flashcards, summaries, and mind maps, or chat with an AI tutor about the material.",
+          "HackYourSchool is a free AI study platform. Upload your lecture notes or PDFs and instantly generate quizzes, flashcards, summaries, and mind maps, or chat with an AI tutor about the material.",
       },
       {
         question: "Do I need to install anything?",
-        answer: "No, CrackYourSchool runs entirely in your browser. Just sign up and start uploading documents.",
+        answer: "No, HackYourSchool runs entirely in your browser. Just sign up and start uploading documents.",
       },
       {
         question: "What file types can I upload?",
@@ -32,7 +32,7 @@ const categories: FAQCategory[] = [
     title: "Pricing & Plans",
     items: [
       {
-        question: "Is CrackYourSchool really free?",
+        question: "Is HackYourSchool really free?",
         answer:
           "Yes. The Free plan includes 2 PDF uploads and 30 AI tutor questions per month, plus unlimited quiz and flashcard generation, with no credit card required.",
       },
@@ -101,7 +101,7 @@ const FAQPage = () => {
             </Badge>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold px-4">Got Questions?</h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
-              Everything you need to know about CrackYourSchool.
+              Everything you need to know about HackYourSchool.
             </p>
           </div>
 

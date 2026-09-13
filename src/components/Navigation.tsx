@@ -29,8 +29,8 @@ export const Navigation = () => {
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="flex items-center gap-2 text-lg md:text-xl font-bold">
               <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-primary shrink-0" />
-              <span className="hidden sm:inline">CrackYourSchool</span>
-              <span className="sm:hidden">CYS</span>
+              <span className="hidden sm:inline">HackYourSchool</span>
+              <span className="sm:hidden">HYS</span>
             </div>
           </Link>
 

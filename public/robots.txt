@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://crackyourschool.com/sitemap.xml
+Sitemap: https://hackyourschool.com/sitemap.xml

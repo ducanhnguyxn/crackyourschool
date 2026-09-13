@@ -1,4 +1,4 @@
-# CrackYourSchool
+# HackYourSchool
 
 Your free AI study partner — generate quizzes and flashcards from your notes, summarize and chat with your PDFs, get help from an AI tutor, and track your study progress, all in one place.
 
@@ -28,7 +28,7 @@ Requires Node.js & npm — [install with nvm](https://github.com/nvm-sh/nvm#inst
 ```sh
 # Clone the repository
 git clone <YOUR_GIT_URL>
-cd crackyourschool
+cd hackyourschool
 
 # Install dependencies
 npm i
